@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import Avatar from "../atoms/Avatar";
+
 const StyledDiv = styled.div`
   display: flex;
   justify-content: space-between;
@@ -10,7 +12,9 @@ const StyledDiv = styled.div`
 const UserNavBox = () => {
   return (
     <StyledDiv>
-      <div>Avatar</div>
+      <div>
+        <Avatar />
+      </div>
       <div>
         <div>username</div>
         <div>Logout</div>
