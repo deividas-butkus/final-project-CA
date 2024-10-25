@@ -1,8 +1,19 @@
+import styled from "styled-components";
+
+import logo from "../../assets/logo.png";
+
+const StyledDiv = styled.div`
+  height: 100%;
+  > img {
+    height: 90%;
+  }
+`;
+
 const Logo = () => {
   return (
-    <div>
-      <img src="./Logo.tsx" alt="Let's Chat logo" />
-    </div>
+    <StyledDiv>
+      <img src={logo} alt="Let's Chat logo" />
+    </StyledDiv>
   );
 };
 
