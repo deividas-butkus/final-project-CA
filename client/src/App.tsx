@@ -1,5 +1,7 @@
+import Header from "./components/organisms/Header";
+
 const App = () => {
-  return <>TODO</>;
+  return <Header />;
 };
 
 export default App;
