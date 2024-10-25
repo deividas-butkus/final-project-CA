@@ -4,8 +4,10 @@ import logo from "../../assets/logo.png";
 
 const StyledDiv = styled.div`
   height: 100%;
+  display: flex;
+  align-items: center;
   > img {
-    height: 90%;
+    height: 100%;
   }
 `;
 

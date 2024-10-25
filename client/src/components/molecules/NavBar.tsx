@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 const StyledNav = styled.nav`
-  border: 1px solid red;
   display: flex;
   > ul {
     padding: 0;

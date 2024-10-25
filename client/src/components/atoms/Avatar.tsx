@@ -17,6 +17,9 @@ const StyledDiv = styled.div`
     height: 100%;
     width: 100%;
     transition: background-color 0.3s;
+    &:hover {
+      background-color: #4f86c8;
+    }
   }
 `;
 
