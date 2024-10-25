@@ -2,10 +2,9 @@ import styled from "styled-components";
 
 import Logo from "../atoms/Logo";
 import NavBar from "../molecules/NavBar";
-import UserNavBox from "../molecules/UsrNavBox";
+import UserNavBox from "../molecules/UserNavBox";
 
 const StyledHeader = styled.header`
-  border: 1px solid #fff;
   height: 100px;
   padding: 0 5%;
   display: flex;
