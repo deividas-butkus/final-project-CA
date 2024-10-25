@@ -1,12 +1,21 @@
+import styled from "styled-components";
+
+const StyledDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+`;
+
 const UserNavBox = () => {
   return (
-    <div>
+    <StyledDiv>
       <div>Avatar</div>
       <div>
         <div>username</div>
         <div>Logout</div>
       </div>
-    </div>
+    </StyledDiv>
   );
 };
 
