@@ -1,7 +1,13 @@
+import GlobalStyles from "./styles/GlobalStyles";
 import Layout from "./components/templates/Layout";
 
 const App = () => {
-  return <Layout />;
+  return (
+    <>
+      <GlobalStyles />
+      <Layout />
+    </>
+  );
 };
 
 export default App;
