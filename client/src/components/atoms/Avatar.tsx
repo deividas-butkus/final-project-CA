@@ -18,7 +18,7 @@ const StyledDiv = styled.div`
     width: 100%;
     transition: background-color 0.3s;
     &:hover {
-      background-color: #4f86c8;
+      background-color: ${({ theme }) => theme.accent};
     }
   }
 `;
