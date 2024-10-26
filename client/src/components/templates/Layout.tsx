@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import Header from "../organisms/Header";
 import Footer from "../organisms/Footer";
+import Landing from "../organisms/mains/Landing";
 
 const StyledMain = styled.main`
   padding: 10px 5%;
@@ -18,6 +19,7 @@ const Layout = () => {
       <Header />
       <StyledMain>
         <Outlet />
+        <Landing />
       </StyledMain>
       <Footer />
     </>
