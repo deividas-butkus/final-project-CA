@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const StyledFooter = styled.footer`
-  min-height: 10vh;
+  padding: 0 5%;
+  min-height: 5vh;
   background-color: #ccc;
   color: #000;
   display: flex;
@@ -17,6 +17,10 @@ const StyledFooter = styled.footer`
       }
     }
   }
+  > div.privacyAndTC {
+    display: flex;
+    gap: 10px;
+  }
   > div.social {
     display: flex;
     gap: 10px;
@@ -28,16 +32,11 @@ const Footer = () => {
   return (
     <StyledFooter>
       <div>
-        <p>Let's Chat, Inc.</p>
-        <p>&copy; {new Date().getFullYear()}</p>
+        <p>Let's Chat, Inc. &copy; {new Date().getFullYear()}</p>
       </div>
-      <div>
-        <p>
-          <Link to={"/policies/privacy"}>Privacy</Link>
-        </p>
-        <p>
-          <Link to={"/policies/terms"}>Terms</Link>
-        </p>
+      <div className="privacyAndTC">
+        <p>Privacy</p>
+        <p>T&C</p>
       </div>
       <div className="social">
         <a href="https://www.facebook.com/">Facebook</a>
