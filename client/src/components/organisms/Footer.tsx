@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
 const StyledFooter = styled.footer`
   padding: 0 5%;
@@ -39,9 +42,15 @@ const Footer = () => {
         <p>T&C</p>
       </div>
       <div className="social">
-        <a href="https://www.facebook.com/">Facebook</a>
-        <a href="https://www.youtube.com/">YouTube</a>
-        <a href="https://www.instagram.com/">Instagram</a>
+        <a href="https://www.facebook.com/">
+          <FacebookIcon />
+        </a>
+        <a href="https://www.youtube.com/">
+          <YouTubeIcon />
+        </a>
+        <a href="https://www.instagram.com/">
+          <InstagramIcon />
+        </a>
       </div>
     </StyledFooter>
   );
