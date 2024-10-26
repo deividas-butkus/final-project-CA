@@ -1,6 +1,6 @@
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { useTheme } from "../../contexts/useTheme";
+import { useTheme } from "../../hooks/useTheme";
 import styled from "styled-components";
 
 const StyledDiv = styled.div`
