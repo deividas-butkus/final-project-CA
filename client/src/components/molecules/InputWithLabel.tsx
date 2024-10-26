@@ -1,9 +1,10 @@
+import { forwardRef } from "react";
 import styled from "styled-components";
 
 const FieldContainer = styled.div<{ gap?: string }>`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.gap};
+  gap: ${(props) => props.gap || "8px"};
 `;
 
 const StyledLabel = styled.label<{ color?: string; fontSize?: string }>`
@@ -23,7 +24,7 @@ const StyledInput = styled.input<StyledInputProps>`
   border-radius: 15px;
   outline: none;
   &:focus {
-    border-color: ${(props) => props.theme.background};
+    border-color: ${(props) => props.theme.accent};
   }
 `;
 
@@ -51,7 +52,7 @@ type InputWithLabelProps = {
   label: string;
   type?: string;
   name: string;
-  value: string;
+  value?: string | File;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -68,57 +69,68 @@ type InputWithLabelProps = {
   gap?: string;
 };
 
-const InputWithLabel: React.FC<InputWithLabelProps> = ({
-  label,
-  type = "text",
-  name,
-  value,
-  onChange,
-  onBlur,
-  placeholder,
-  error,
-  labelColor,
-  labelFontSize,
-  inputPadding,
-  inputBorderColor,
-  errorBorderColor = "red",
-  gap,
-}) => {
-  const borderColor = error ? errorBorderColor : inputBorderColor;
+const InputWithLabel = forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  InputWithLabelProps
+>(
+  (
+    {
+      label,
+      type = "text",
+      name,
+      value,
+      onChange,
+      onBlur,
+      placeholder,
+      error,
+      labelColor,
+      labelFontSize,
+      inputPadding,
+      inputBorderColor,
+      errorBorderColor = "red",
+      gap,
+    },
+    ref
+  ) => {
+    const borderColor = error ? errorBorderColor : inputBorderColor;
 
-  return (
-    <FieldContainer gap={gap}>
-      <StyledLabel htmlFor={name} color={labelColor} fontSize={labelFontSize}>
-        {label}
-      </StyledLabel>
-      {type === "textarea" ? (
-        <StyledTextarea
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          placeholder={placeholder}
-          padding={inputPadding}
-          $borderColor={borderColor}
-          rows={8}
-        />
-      ) : (
-        <StyledInput
-          type={type}
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          placeholder={placeholder}
-          padding={inputPadding}
-          $borderColor={borderColor}
-        />
-      )}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-    </FieldContainer>
-  );
-};
+    return (
+      <FieldContainer gap={gap}>
+        <StyledLabel htmlFor={name} color={labelColor} fontSize={labelFontSize}>
+          {label}
+        </StyledLabel>
+        {type === "textarea" ? (
+          <StyledTextarea
+            id={name}
+            name={name}
+            value={value as string}
+            onChange={onChange}
+            onBlur={onBlur}
+            placeholder={placeholder}
+            padding={inputPadding}
+            $borderColor={borderColor}
+            ref={ref as React.Ref<HTMLTextAreaElement>}
+          />
+        ) : (
+          <StyledInput
+            type={type}
+            id={name}
+            name={name}
+            value={type === "file" ? undefined : (value as string)}
+            onChange={onChange}
+            onBlur={onBlur}
+            placeholder={placeholder}
+            padding={inputPadding}
+            $borderColor={borderColor}
+            ref={ref as React.Ref<HTMLInputElement>}
+          />
+        )}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+      </FieldContainer>
+    );
+  }
+);
+
+InputWithLabel.displayName = "InputWithLabel";
 
 export default InputWithLabel;
