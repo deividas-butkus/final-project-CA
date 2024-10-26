@@ -10,7 +10,7 @@ const StyledSection = styled.section`
     > img {
       height: 100%;
       border-radius: 10px;
-      box-shadow: 1px 1px 5px #64f1f0;
+      box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
     }
   }
   > h1 {
@@ -35,11 +35,12 @@ const StyledSection = styled.section`
 
       &.login {
         background-color: #24304f;
-        box-shadow: 1px 1px 5px #64f1f0;
+        box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
+        color: #8de5f2;
       }
       &.register {
         background-color: #64f1f0;
-        box-shadow: 1px 1px 5px #64f1f0;
+        box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
         color: #24304f;
       }
       > p {
