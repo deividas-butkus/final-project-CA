@@ -1,13 +1,7 @@
-import Header from "./components/organisms/Header";
-import Footer from "./components/organisms/Footer";
+import Layout from "./components/templates/Layout";
 
 const App = () => {
-  return (
-    <>
-      <Header />
-      <Footer />
-    </>
-  );
+  return <Layout />;
 };
 
 export default App;
