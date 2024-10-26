@@ -1,13 +1,13 @@
 import { createContext, useState, ReactNode } from "react";
 
-type ThemeContextType = {
+type ThemesContextType = {
   isLightMode: boolean;
   toggleTheme: () => void;
 };
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const ThemesContext = createContext<ThemesContextType | undefined>(undefined);
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+export const ThemesProvider = ({ children }: { children: ReactNode }) => {
   const storedTheme = localStorage.getItem("theme") === "dark";
   const [isLightMode, setIsLightMode] = useState(storedTheme);
 
@@ -20,10 +20,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ isLightMode, toggleTheme }}>
+    <ThemesContext.Provider value={{ isLightMode, toggleTheme }}>
       {children}
-    </ThemeContext.Provider>
+    </ThemesContext.Provider>
   );
 };
 
-export default ThemeContext;
+export default ThemesContext;
