@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-import logo from "../../assets/logo.png";
-
 const StyledDiv = styled.div`
   height: 100%;
   display: flex;
@@ -14,7 +12,7 @@ const StyledDiv = styled.div`
 const Logo = () => {
   return (
     <StyledDiv>
-      <img src={logo} alt="Let's Chat logo" />
+      <img src="/logo.png" alt="Let's Chat logo" />
     </StyledDiv>
   );
 };
