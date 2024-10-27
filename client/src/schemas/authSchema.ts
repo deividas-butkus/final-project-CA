@@ -18,7 +18,7 @@ export const authSchema = z
         "Password must contain at least one special character (!@#$%^&*_+)"
       ),
     passwordRepeat: z.string().optional(),
-    profileImage: z.instanceof(File).optional(),
+    profileImage: z.instanceof(File).nullable(),
   })
   .refine(
     (data) => data.password === data.passwordRepeat || !data.passwordRepeat,
