@@ -52,7 +52,7 @@ type InputWithLabelProps = {
   label: string;
   type?: string;
   name: string;
-  value?: string | File;
+  value?: string | File | null;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
