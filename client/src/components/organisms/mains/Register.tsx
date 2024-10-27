@@ -1,10 +1,22 @@
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { authSchema } from "../../schemas/authSchema";
-import InputWithLabel from "../molecules/InputWithLabel";
-import { z } from "zod";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import styled from "styled-components";
+
+import { authSchema } from "../../../schemas/authSchema";
+import InputWithLabel from "../../molecules/InputWithLabel";
+import { useNavigate } from "react-router-dom";
+
+import Button from "../../atoms/Button";
+
+const StyledSection = styled.section`
+  > form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+`;
 
 type RegisterFormData = z.infer<typeof authSchema>;
 
@@ -61,7 +73,7 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <StyledSection>
       <h2>Register</h2>
       <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
         <Controller
@@ -77,7 +89,6 @@ const Register = () => {
             />
           )}
         />
-
         <Controller
           name="profileImage"
           control={control}
@@ -96,7 +107,6 @@ const Register = () => {
             />
           )}
         />
-
         <Controller
           name="password"
           control={control}
@@ -110,7 +120,6 @@ const Register = () => {
             />
           )}
         />
-
         <Controller
           name="passwordRepeat"
           control={control}
@@ -124,13 +133,14 @@ const Register = () => {
             />
           )}
         />
-
-        <button type="submit">Register</button>
+        <Button type="submit" $width="100px">
+          Register
+        </Button>
       </form>
 
       {registerError && <p style={{ color: "red" }}>{registerError}</p>}
       {registerSuccess && <p style={{ color: "green" }}>{registerSuccess}</p>}
-    </div>
+    </StyledSection>
   );
 };
 
