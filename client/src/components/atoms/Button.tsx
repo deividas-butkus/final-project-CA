@@ -3,6 +3,7 @@ import styled from "styled-components";
 const StyledButton = styled.button<Props>`
   font-family: inherit;
   border: 1px solid transparent;
+  width: ${({ $width }) => $width || "auto"};
   font-size: ${({ $fontSize }) => $fontSize || "14px"};
   background-color: ${({ theme, $bgColor }) => $bgColor || theme.buttonBg};
   color: ${({ theme, $color }) => $color || theme.buttonText};
@@ -11,11 +12,12 @@ const StyledButton = styled.button<Props>`
   cursor: pointer;
   transition: background-color 0.3s;
   transition: border-color 0.25s;
-
+  transition: transform 0.2s ease;
   &:hover {
     background-color: ${({ theme, $bgColor }) =>
       $bgColor ? darkenColor($bgColor) : darkenColor(theme.buttonBg)};
     border-color: ${({ theme, $color }) => $color || theme.buttonText};
+    transform: scale(1.1);
   }
   &:focus,
   &:focus-visible {
@@ -25,11 +27,12 @@ const StyledButton = styled.button<Props>`
 
 type Props = {
   $fontSize?: string;
+  $width?: string;
   $bgColor?: string;
   $color?: string;
   $padding?: string;
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit" | "reset";
 };
 
@@ -49,6 +52,7 @@ const darkenColor = (color: string) => {
 const Button = ({
   children,
   $fontSize,
+  $width,
   $bgColor,
   $color,
   $padding,
@@ -57,6 +61,7 @@ const Button = ({
   return (
     <StyledButton
       $fontSize={$fontSize}
+      $width={$width}
       $bgColor={$bgColor}
       $color={$color}
       $padding={$padding}

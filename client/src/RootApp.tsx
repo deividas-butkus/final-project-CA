@@ -1,6 +1,6 @@
 import { useTheme } from "./hooks/useTheme";
 import { ThemeProvider as StyledThemesProvider } from "styled-components";
-import { darkTheme, lightTheme } from "./styles/theme";
+import { darkTheme, lightTheme } from "./styles/themes";
 import App from "./App";
 
 const RootApp = () => {

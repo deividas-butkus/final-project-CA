@@ -1,53 +1,83 @@
-import { forwardRef } from "react";
-import styled from "styled-components";
+import { forwardRef, useState } from "react";
+import styled, { DefaultTheme } from "styled-components";
+import Button from "../atoms/Button";
 
-const FieldContainer = styled.div<{ gap?: string }>`
+// Hidden file input for file selection
+const StyledHiddenFileInput = styled.input`
+  display: none;
+`;
+
+// Field container with adjustable gap
+const StyledFieldContainer = styled.div<{ gap?: string }>`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.gap || "8px"};
+  gap: ${({ gap }) => gap || "8px"};
 `;
 
+// Label styling with color and font size options
 const StyledLabel = styled.label<{ color?: string; fontSize?: string }>`
-  font-size: ${(props) => props.fontSize || "16px"};
-  color: ${(props) => props.color || props.theme.text};
+  font-size: ${({ fontSize }) => fontSize || "16px"};
+  color: ${({ color, theme }) => color || (theme as DefaultTheme).text};
 `;
 
+// File input row to align elements
+const FileInputRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+
+// File label styling
+const StyledFileLabel = styled.span`
+  color: ${({ theme }) => (theme as DefaultTheme).text};
+  font-size: 14px;
+`;
+
+// Common styles for inputs and textareas
+const inputStyles = `
+  font-family: inherit;
+  padding: 8px;
+  border: 1px solid ${({
+    theme,
+    $borderColor,
+  }: {
+    theme: DefaultTheme;
+    $borderColor?: string;
+  }) => $borderColor || theme.border};
+  border-radius: 8px;
+  outline: none;
+  &:focus {
+    border-color: ${({ theme }: { theme: DefaultTheme }) => theme.accent};
+  }
+`;
+
+// Styled input component
+const StyledInput = styled.input<StyledInputProps>`
+  ${inputStyles}
+  padding: ${({ padding }) => padding || "8px"};
+`;
+
+// Styled textarea component with additional textarea-specific styles
+const StyledTextarea = styled.textarea<StyledInputProps>`
+  ${inputStyles}
+  resize: vertical;
+  background-color: ${({ theme }) => (theme as DefaultTheme).background};
+  color: ${({ theme }) => (theme as DefaultTheme).text};
+`;
+
+// Error message styling
+const ErrorMessage = styled.span`
+  color: ${({ theme }) => (theme as DefaultTheme).error};
+  font-size: 12px;
+`;
+
+// Define the type for StyledInputProps if not already defined
 type StyledInputProps = {
   padding?: string;
   $borderColor?: string;
 };
 
-const StyledInput = styled.input<StyledInputProps>`
-  font-family: inherit;
-  padding: ${(props) => props.padding || "8px"};
-  border: 1px solid ${(props) => props.$borderColor || props.theme.border};
-  border-radius: 15px;
-  outline: none;
-  &:focus {
-    border-color: ${(props) => props.theme.accent};
-  }
-`;
-
-const StyledTextarea = styled.textarea<StyledInputProps>`
-  font-family: inherit;
-  padding: ${(props) => props.padding || "8px"};
-  border: 1px solid ${(props) => props.$borderColor || props.theme.border};
-  border-radius: 15px;
-  outline: none;
-  resize: vertical;
-  background-color: ${(props) => props.theme.background};
-  color: ${(props) => props.theme.text};
-
-  &:focus {
-    border-color: ${(props) => props.theme.accent};
-  }
-`;
-
-const ErrorMessage = styled.span`
-  color: ${(props) => props.theme.error};
-  font-size: 12px;
-`;
-
+// InputWithLabel component props
 type InputWithLabelProps = {
   label: string;
   type?: string;
@@ -69,6 +99,7 @@ type InputWithLabelProps = {
   gap?: string;
 };
 
+// InputWithLabel component
 const InputWithLabel = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   InputWithLabelProps
@@ -84,7 +115,7 @@ const InputWithLabel = forwardRef<
       placeholder,
       error,
       labelColor,
-      labelFontSize,
+      labelFontSize = "14px",
       inputPadding,
       inputBorderColor,
       errorBorderColor = "red",
@@ -93,13 +124,69 @@ const InputWithLabel = forwardRef<
     ref
   ) => {
     const borderColor = error ? errorBorderColor : inputBorderColor;
+    const [fileChosen, setFileChosen] = useState(false);
+
+    const handleFileButtonClick = (e?: React.MouseEvent<HTMLButtonElement>) => {
+      e?.preventDefault();
+      document.getElementById(name)?.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFileChosen(!!e.target.files?.length);
+      onChange(e);
+    };
+
+    const handleClearFile = () => {
+      setFileChosen(false);
+      const fileInput = document.getElementById(name) as HTMLInputElement;
+      if (fileInput) fileInput.value = "";
+      onChange({
+        target: { name, value: null, files: null },
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
+    };
 
     return (
-      <FieldContainer gap={gap}>
+      <StyledFieldContainer gap={gap}>
         <StyledLabel htmlFor={name} color={labelColor} fontSize={labelFontSize}>
           {label}
         </StyledLabel>
-        {type === "textarea" ? (
+        {type === "file" ? (
+          <>
+            <StyledHiddenFileInput
+              type="file"
+              id={name}
+              name={name}
+              onChange={handleFileChange}
+              ref={ref as React.Ref<HTMLInputElement>}
+            />
+            <FileInputRow>
+              <Button
+                onClick={handleFileButtonClick}
+                $fontSize="14px"
+                $padding="8px 16px"
+                $width="120px"
+              >
+                {fileChosen ? "File chosen" : "Choose File"}
+              </Button>
+              {fileChosen && (
+                <>
+                  <StyledFileLabel>
+                    {(value as File)?.name || "File selected"}
+                  </StyledFileLabel>
+                  <Button
+                    onClick={handleClearFile}
+                    $fontSize="14px"
+                    $padding="8px 16px"
+                    $bgColor="#e74c3c"
+                    $width="100px"
+                  >
+                    Clear
+                  </Button>
+                </>
+              )}
+            </FileInputRow>
+          </>
+        ) : type === "textarea" ? (
           <StyledTextarea
             id={name}
             name={name}
@@ -126,7 +213,7 @@ const InputWithLabel = forwardRef<
           />
         )}
         {error && <ErrorMessage>{error}</ErrorMessage>}
-      </FieldContainer>
+      </StyledFieldContainer>
     );
   }
 );
