@@ -1,4 +1,7 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import LoginIcon from "@mui/icons-material/Login";
 
 import hero from "../../../assets/hero.webp";
 
@@ -9,7 +12,7 @@ const StyledSection = styled.section`
     justify-content: space-around;
     > img {
       height: 100%;
-      border-radius: 10px;
+      border-radius: 15px;
       box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
     }
   }
@@ -22,29 +25,47 @@ const StyledSection = styled.section`
   > div.entryBoxesContainer {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 10px;
     > div.entryBox {
       height: 100px;
       width: 150px;
-      border-radius: 5px;
+      border-radius: 10px;
       padding: 10px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      > div {
+        > a {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+      }
 
       &.login {
         background-color: #24304f;
         box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
         color: #8de5f2;
+        > div {
+          > a {
+            color: #8de5f2;
+          }
+        }
       }
       &.register {
         background-color: #64f1f0;
         box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
         color: #24304f;
+        > div {
+          > a {
+            color: #24304f;
+          }
+        }
       }
       > p {
         margin: 0;
+        margin-bottom: 10px;
         font-size: 0.9rem;
       }
     }
@@ -61,11 +82,21 @@ const Landing = () => {
       <div className="entryBoxesContainer">
         <div className="entryBox login">
           <p>Already a member?</p>
-          <p>Log In</p>
+          <div>
+            <Link to="/login">
+              Log In
+              <LoginIcon />
+            </Link>
+          </div>
         </div>
         <div className="entryBox register">
-          <p>New to Lets's Chat?</p>
-          <p>Register</p>
+          <p>New to Let's Chat?</p>
+          <div>
+            <Link to="/register">
+              Register
+              <HowToRegIcon />
+            </Link>
+          </div>
         </div>
       </div>
     </StyledSection>
