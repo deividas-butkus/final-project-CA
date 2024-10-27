@@ -4,7 +4,7 @@ import GlobalStyles from "./styles/GlobalStyles";
 import Layout from "./components/templates/Layout";
 
 import Landing from "./components/organisms/mains/Landing";
-import Register from "./components/organisms/Register";
+import Register from "./components/organisms/mains/Register";
 
 const App = () => {
   return (
@@ -12,8 +12,6 @@ const App = () => {
       <GlobalStyles />
       <Routes>
         <Route element={<Layout />}>
-          {" "}
-          {/* Layout wraps all nested routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
         </Route>
