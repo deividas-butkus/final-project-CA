@@ -164,9 +164,8 @@ const InputWithLabel = forwardRef<
                 onClick={handleFileButtonClick}
                 $fontSize="14px"
                 $padding="8px 16px"
-                $width="120px"
               >
-                {fileChosen ? "File chosen" : "Choose File"}
+                {fileChosen ? "Choose Other" : "Choose File"}
               </Button>
               {fileChosen && (
                 <>
@@ -178,7 +177,6 @@ const InputWithLabel = forwardRef<
                     $fontSize="14px"
                     $padding="8px 16px"
                     $bgColor="#e74c3c"
-                    $width="100px"
                   >
                     Clear
                   </Button>
