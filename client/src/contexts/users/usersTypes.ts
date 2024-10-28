@@ -9,4 +9,5 @@ export type RegisterFormData = Omit<User, "_id">;
 
 export type Action =
   | { type: "SET_USERS"; payload: User[] }
-  | { type: "ADD_USER"; payload: User };
+  | { type: "ADD_USER"; payload: User }
+  | { type: "LOGIN"; payload: User };

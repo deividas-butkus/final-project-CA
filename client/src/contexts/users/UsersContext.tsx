@@ -7,6 +7,7 @@ export type UsersContextType = {
   users: User[];
   dispatch: React.Dispatch<Action>;
   addUser: (user: FormData) => Promise<void>;
+  login: (formData: FormData) => Promise<void>;
 };
 
 type UsersProviderProps = {
@@ -45,8 +46,23 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     }
   };
 
+  const login = async (formData: FormData) => {
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        body: formData,
+      });
+      const userData = await response.json();
+
+      dispatch({ type: "LOGIN", payload: userData });
+    } catch (err) {
+      console.error("Failed to login:", err);
+      throw new Error("Login failed");
+    }
+  };
+
   return (
-    <UsersContext.Provider value={{ dispatch, users, addUser }}>
+    <UsersContext.Provider value={{ dispatch, users, addUser, login }}>
       {children}
     </UsersContext.Provider>
   );
