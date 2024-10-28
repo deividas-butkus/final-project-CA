@@ -48,7 +48,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const login = async (formData: FormData) => {
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("/api/users/login", {
         method: "POST",
         body: formData,
       });
