@@ -13,7 +13,7 @@ const ThemeToggler = () => {
   const { isLightMode, toggleTheme } = useThemesContext();
 
   return (
-    <StyledDiv onClick={toggleTheme} style={{ cursor: "pointer" }}>
+    <StyledDiv onClick={toggleTheme}>
       {isLightMode ? (
         <DarkModeIcon titleAccess="Switch to dark mode" />
       ) : (
