@@ -55,6 +55,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Get currently logged in user
+router.get("/current", authenticateToken, async (req, res) => {
+  try {
+    const user = await usersCollection.findOne({ _id: req.user.userId });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+});
+
 // Route for getting all users
 router.get("/", authenticateToken, async (req, res) => {
   try {
