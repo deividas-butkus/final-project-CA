@@ -3,11 +3,11 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import styled from "styled-components";
-
-import { authSchema } from "../../../schemas/authSchema";
-import InputWithLabel from "../../molecules/InputWithLabel";
 import { useNavigate } from "react-router-dom";
 
+import { useUsersContext } from "../../../contexts/users/useUsersContext";
+import { authSchema } from "../../../schemas/authSchema";
+import InputWithLabel from "../../molecules/InputWithLabel";
 import Button from "../../atoms/Button";
 
 const StyledSection = styled.section`
@@ -21,9 +21,10 @@ const StyledSection = styled.section`
 type RegisterFormData = z.infer<typeof authSchema>;
 
 const Register = () => {
-  const navigate = useNavigate();
+  const { addUser } = useUsersContext();
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [registerSuccess, setRegisterSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const {
     control,
@@ -41,33 +42,18 @@ const Register = () => {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
+    const formData = new FormData();
+    formData.append("username", data.username);
+    if (data.profileImage) formData.append("profileImage", data.profileImage);
+    formData.append("password", data.password);
+
     try {
-      const formData = new FormData();
-      formData.append("username", data.username);
-      formData.append("password", data.password);
-      if (data.profileImage) formData.append("profileImage", data.profileImage);
-
-      const res = await fetch("/api/users", {
-        method: "POST",
-        body: formData,
-      });
-
-      const contentType = res.headers.get("content-type");
-      if (!res.ok) {
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await res.json();
-          setRegisterError(errorData.message || "Registration failed");
-        } else {
-          setRegisterError("Unexpected error occurred. Please try again.");
-          console.error("Unexpected response format:", await res.text());
-        }
-      } else {
-        setRegisterSuccess("Registration successful!");
-        reset();
-        setTimeout(() => navigate("/profile"), 2000);
-      }
+      await addUser(formData);
+      setRegisterSuccess("Registration successful!");
+      reset();
+      setTimeout(() => navigate("/profile"), 2000);
     } catch (err) {
-      console.error("Catch error:", err);
+      console.error("Failed to register user:", err);
       setRegisterError("An error occurred during registration.");
     }
   };
