@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
-import { authSchema } from "../../../schemas/authSchema";
+import { registerSchema } from "../../../schemas/authSchema";
 import InputWithLabel from "../../molecules/InputWithLabel";
 import Button from "../../atoms/Button";
 
@@ -18,7 +18,7 @@ const StyledSection = styled.section`
   }
 `;
 
-type RegisterFormData = z.infer<typeof authSchema>;
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Register = () => {
   const { addUser } = useUsersContext();
@@ -32,7 +32,7 @@ const Register = () => {
     formState: { errors },
     reset,
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       profileImage: null,

@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
-import { authSchema } from "../../../schemas/authSchema";
+import { loginSchema } from "../../../schemas/authSchema";
 import InputWithLabel from "../../molecules/InputWithLabel";
 import Button from "../../atoms/Button";
 
@@ -18,7 +18,7 @@ const StyledSection = styled.section`
   }
 `;
 
-type RegisterFormData = z.infer<typeof authSchema>;
+type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const { login } = useUsersContext();
@@ -31,26 +31,22 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(authSchema),
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: RegisterFormData) => {
-    const formData = new FormData();
-    formData.append("username", data.username);
-    formData.append("password", data.password);
-
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(formData);
+      await login({ username: data.username, password: data.password });
       setLoginSuccess("Login successful!");
       reset();
       setTimeout(() => navigate("/profile"), 2000);
     } catch (err) {
-      console.error("Failed to register user:", err);
+      console.error("Failed to login:", err);
       setLoginError("An error occurred during login.");
     }
   };
@@ -58,7 +54,7 @@ const Login = () => {
   return (
     <StyledSection>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="username"
           control={control}
