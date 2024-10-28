@@ -5,6 +5,7 @@ import Layout from "./components/templates/Layout";
 
 import Landing from "./components/organisms/mains/Landing";
 import Register from "./components/organisms/mains/Register";
+import Login from "./components/organisms/mains/Login";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
       </Routes>
