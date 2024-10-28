@@ -1,6 +1,6 @@
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { useTheme } from "../../hooks/useTheme";
+import { useThemesContext } from "../../contexts/themes/useThemesContext";
 import styled from "styled-components";
 
 const StyledDiv = styled.div`
@@ -10,7 +10,7 @@ const StyledDiv = styled.div`
 `;
 
 const ThemeToggler = () => {
-  const { isLightMode, toggleTheme } = useTheme();
+  const { isLightMode, toggleTheme } = useThemesContext();
 
   return (
     <StyledDiv onClick={toggleTheme} style={{ cursor: "pointer" }}>
