@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-// import defaultAvatarImg from "../../assets/defaultProfileImage.png";
+import { useUsersContext } from "../../contexts/users/useUsersContext";
+import { DEFAULT_USER_IMAGE, USER_IMAGE_ALT } from "../../config/constants";
 
 const StyledDiv = styled.div`
   height: 30px;
@@ -25,14 +26,13 @@ const StyledDiv = styled.div`
 `;
 
 const Avatar = () => {
+  const { currentUser } = useUsersContext();
+
   return (
     <StyledDiv>
-      {/* <img src={defaultProfileImage} alt="Contact's photo" /> */}
       <img
-        src={
-          "/uploads/profileImages/82c39380-5a70-48be-8f7f-723b7a725b2f-440px-Beelzebub.png"
-        }
-        alt="Belzebub"
+        src={currentUser?.profileImage || DEFAULT_USER_IMAGE}
+        alt={currentUser?.username || USER_IMAGE_ALT}
       />
     </StyledDiv>
   );
