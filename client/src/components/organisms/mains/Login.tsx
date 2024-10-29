@@ -24,13 +24,13 @@ const Login = () => {
   const { login } = useUsersContext();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loginSuccess, setLoginSuccess] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -43,8 +43,9 @@ const Login = () => {
     try {
       await login({ username: data.username, password: data.password });
       setLoginSuccess("Login successful!");
-      reset();
-      setTimeout(() => navigate("/profile"), 2000);
+      setTimeout(() => {
+        navigate("/user");
+      }, 3000);
     } catch (err) {
       console.error("Failed to login:", err);
       setLoginError("An error occurred during login.");
@@ -81,7 +82,7 @@ const Login = () => {
             />
           )}
         />
-        <Button type="submit" $width="100px">
+        <Button type="submit" $width="fit-content">
           Login
         </Button>
       </form>

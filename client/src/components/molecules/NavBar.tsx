@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 
 const StyledNav = styled.nav`
   display: flex;
@@ -19,7 +20,9 @@ const NavBar = () => {
   return (
     <StyledNav>
       <ul>
-        <li>My Profile</li>
+        <li>
+          <NavLink to={"/user"}>My Profile</NavLink>
+        </li>
         <li>Contacts</li>
         <li>Chats</li>
       </ul>
