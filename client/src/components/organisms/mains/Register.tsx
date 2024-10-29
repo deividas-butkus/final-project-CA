@@ -30,7 +30,6 @@ const Register = () => {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -50,8 +49,7 @@ const Register = () => {
     try {
       await addUser(formData);
       setRegisterSuccess("Registration successful!");
-      reset();
-      setTimeout(() => navigate("/profile"), 2000);
+      setTimeout(() => navigate("/user"), 3000);
     } catch (err) {
       console.error("Failed to register user:", err);
       setRegisterError("An error occurred during registration.");
