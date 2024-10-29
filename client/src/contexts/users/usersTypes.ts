@@ -7,6 +7,7 @@ export type UsersContextType = {
   updateUsername: (newUsername: string) => Promise<void>;
   updateProfileImage: (file: File) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
+  logout: () => void;
 };
 
 export type User = {
@@ -29,4 +30,5 @@ export type Action =
   | { type: "LOGIN"; payload: User }
   | { type: "UPDATE_USERNAME"; payload: string }
   | { type: "UPDATE_PROFILE_IMAGE"; payload: string }
-  | { type: "UPDATE_PASSWORD" };
+  | { type: "UPDATE_PASSWORD" }
+  | { type: "LOGOUT" };

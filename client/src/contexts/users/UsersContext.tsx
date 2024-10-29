@@ -1,4 +1,5 @@
 import { createContext, useReducer, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { UsersContextType, User, UsersState } from "./usersTypes";
 import { usersReducer } from "./usersReducer";
@@ -14,8 +15,9 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     users: [],
     currentUser: null,
   };
-
   const [state, dispatch] = useReducer(usersReducer, initialState);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -169,6 +171,12 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     }
   };
 
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   return (
     <UsersContext.Provider
       value={{
@@ -180,6 +188,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         updateUsername,
         updateProfileImage,
         updatePassword,
+        logout,
       }}
     >
       {children}

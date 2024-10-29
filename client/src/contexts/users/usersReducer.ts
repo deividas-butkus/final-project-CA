@@ -27,6 +27,8 @@ export const usersReducer = (state: UsersState, action: Action): UsersState => {
         ...state,
         currentUser: state.currentUser ? { ...state.currentUser } : null,
       };
+    case "LOGOUT":
+      return { ...state, currentUser: null };
     default:
       return state;
   }
