@@ -17,7 +17,7 @@ const StyledButton = styled.button<Props>`
     background-color: ${({ theme, $bgColor }) =>
       $bgColor ? darkenColor($bgColor) : darkenColor(theme.buttonBg)};
     border-color: ${({ theme, $color }) => $color || theme.buttonText};
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
   &:focus,
   &:focus-visible {
