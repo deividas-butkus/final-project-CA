@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import { useUsersContext } from "../../contexts/users/useUsersContext";
 import Logo from "../atoms/Logo";
 import NavBar from "../molecules/NavBar";
 import UserNavBox from "../molecules/UserNavBox";
@@ -12,14 +13,20 @@ const StyledHeader = styled.header`
   align-items: center;
 `;
 
-const Haeder = () => {
+const Header = () => {
+  const { currentUser } = useUsersContext();
+
   return (
     <StyledHeader>
       <Logo />
-      <NavBar />
-      <UserNavBox />
+      {currentUser && (
+        <>
+          <NavBar />
+          <UserNavBox />
+        </>
+      )}
     </StyledHeader>
   );
 };
 
-export default Haeder;
+export default Header;
