@@ -15,10 +15,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
 const app = express();
 
 const SERVER_PORT = process.env.SERVER_PORT || 5002;
