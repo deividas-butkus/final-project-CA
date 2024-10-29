@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState, ReactNode, useEffect } from "react";
 
 type ThemesContextType = {
   isLightMode: boolean;
@@ -18,6 +18,11 @@ export const ThemesProvider = ({ children }: { children: ReactNode }) => {
       return newMode;
     });
   };
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") === "dark";
+    setIsLightMode(!storedTheme);
+  }, []);
 
   return (
     <ThemesContext.Provider value={{ isLightMode, toggleTheme }}>
