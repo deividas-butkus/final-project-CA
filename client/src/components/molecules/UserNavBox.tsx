@@ -12,7 +12,6 @@ const StyledDiv = styled.div`
 
 const UserNavBox = () => {
   const { currentUser } = useUsersContext();
-  console.log(currentUser);
 
   return (
     <StyledDiv>
