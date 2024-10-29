@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import jwt from "jsonwebtoken";
 import { fileURLToPath } from "url";
 
@@ -48,7 +49,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ token, message: "Login successful" });
+    res.status(200).json({ token, user, message: "Login successful" });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -95,7 +96,9 @@ router.post("/", upload.single("profileImage"), async (req, res) => {
       _id: uuidv4(),
       username,
       password: hashedPassword,
-      profileImage: req.file ? req.file.path : "/default/path/to/image.jpg",
+      profileImage: req.file
+        ? req.file.path
+        : "/uploads/defaultProfileImage.png",
     };
 
     await usersCollection.insertOne(newUser);
@@ -105,6 +108,114 @@ router.post("/", upload.single("profileImage"), async (req, res) => {
     res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
+// Route to update username
+router.patch("/updateUsername", authenticateToken, async (req, res) => {
+  const { username } = req.body;
+  const userId = req.user.userId;
+
+  try {
+    const existingUser = await usersCollection.findOne({ username });
+    if (existingUser && existingUser._id !== userId) {
+      return res.status(400).json({ message: "Username already occupied" });
+    }
+
+    await usersCollection.updateOne({ _id: userId }, { $set: { username } });
+
+    const updatedUser = await usersCollection.findOne({ _id: userId });
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error("Failed to update username:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Route to update profile image
+router.patch(
+  "/updateProfileImage",
+  authenticateToken,
+  upload.single("profileImage"),
+  async (req, res) => {
+    const userId = req.user.userId;
+
+    if (!req.file) {
+      console.error("No file uploaded");
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    try {
+      // Retrieve the user's current profile image path
+      const user = await usersCollection.findOne({ _id: userId });
+      if (!user) {
+        console.error("User not found for update:", userId);
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const oldProfileImage = user.profileImage;
+      const newProfileImage = `/uploads/profileImages/${req.file.filename}`;
+
+      // Update the user's profile image in the database
+      const result = await usersCollection.updateOne(
+        { _id: userId },
+        { $set: { profileImage: newProfileImage } }
+      );
+
+      if (result.matchedCount === 0) {
+        console.error("Failed to update profile image in database");
+        return res
+          .status(500)
+          .json({ message: "Failed to update profile image in database" });
+      }
+
+      // Delete the old image file if it exists and is not the default image
+      if (oldProfileImage && oldProfileImage !== "/default/path/to/image.jpg") {
+        const oldImagePath = path.join(__dirname, "..", oldProfileImage);
+
+        // Check if the file exists before trying to delete it
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlink(oldImagePath, (err) => {
+            if (err) {
+              console.error("Failed to delete old profile image:", err);
+            } else {
+              console.log("Old profile image deleted successfully");
+            }
+          });
+        } else {
+          console.log("Old profile image not found, no deletion necessary");
+        }
+      }
+
+      // Fetch and return the updated user data
+      const updatedUser = await usersCollection.findOne({ _id: userId });
+      res.status(200).json(updatedUser);
+    } catch (err) {
+      console.error("Failed to update profile image:", err);
+      res
+        .status(500)
+        .json({ message: "Internal Server Error", error: err.message });
+    }
+  }
+);
+
+// Route to update password
+router.patch("/updatePassword", authenticateToken, async (req, res) => {
+  const { password } = req.body;
+  const userId = req.user.userId;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await usersCollection.updateOne(
+      { _id: userId },
+      { $set: { password: hashedPassword } }
+    );
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Failed to update password:", err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
