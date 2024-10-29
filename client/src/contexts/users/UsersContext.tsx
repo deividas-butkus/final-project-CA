@@ -20,7 +20,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
-      if (!token) return; // Exit if there's no token
+      if (!token) return;
 
       try {
         const response = await fetch("/api/users", {
@@ -64,21 +64,29 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const addUser = async (formData: FormData) => {
     try {
+      // Register the user
       const response = await fetch("/api/users", {
         method: "POST",
         body: formData,
       });
-      const newUser: User = await response.json();
-      dispatch({ type: "ADD_USER", payload: newUser });
+      if (!response.ok) throw new Error("Failed to register");
+
+      const username = formData.get("username") as string;
+      const password = formData.get("password") as string;
+
+      if (!username || !password) {
+        throw new Error("Username or password is missing for login");
+      }
+
+      await login({ username, password });
     } catch (err) {
-      console.error("Failed to add user:", err);
+      console.error("Failed to register and log in user:", err);
+      throw err;
     }
   };
 
   const login = async (credentials: { username: string; password: string }) => {
     try {
-      console.log("Attempting login with credentials:", credentials);
-
       const response = await fetch("/api/users/login", {
         method: "POST",
         headers: {
@@ -89,12 +97,75 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
       if (!response.ok) {
         throw new Error("Login failed");
       }
-      const { token, ...userData } = await response.json();
+      const { token, user } = await response.json();
       localStorage.setItem("token", token);
-      dispatch({ type: "LOGIN", payload: userData });
+      dispatch({ type: "LOGIN", payload: user });
     } catch (err) {
       console.error("Failed to login:", err);
       throw err;
+    }
+  };
+
+  const updateUsername = async (newUsername: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/users/updateUsername", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ username: newUsername }),
+      });
+      if (!response.ok) throw new Error("Failed to update username");
+
+      dispatch({ type: "UPDATE_USERNAME", payload: newUsername });
+    } catch (err) {
+      console.error("Failed to update username:", err);
+    }
+  };
+
+  const updateProfileImage = async (file: File) => {
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("profileImage", file);
+
+      const response = await fetch("/api/users/updateProfileImage", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (!response.ok) throw new Error("Failed to update profile image");
+
+      const updatedUser: User = await response.json();
+      dispatch({
+        type: "UPDATE_PROFILE_IMAGE",
+        payload: updatedUser.profileImage || "",
+      });
+    } catch (err) {
+      console.error("Failed to update profile image:", err);
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/users/updatePassword", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ password: newPassword }),
+      });
+      if (!response.ok) throw new Error("Failed to update password");
+
+      dispatch({ type: "UPDATE_PASSWORD" });
+    } catch (err) {
+      console.error("Failed to update password:", err);
     }
   };
 
@@ -106,6 +177,9 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         currentUser: state.currentUser,
         addUser,
         login,
+        updateUsername,
+        updateProfileImage,
+        updatePassword,
       }}
     >
       {children}

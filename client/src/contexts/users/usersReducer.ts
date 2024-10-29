@@ -8,6 +8,25 @@ export const usersReducer = (state: UsersState, action: Action): UsersState => {
       return { ...state, users: [...state.users, action.payload] };
     case "LOGIN":
       return { ...state, currentUser: action.payload };
+    case "UPDATE_USERNAME":
+      return {
+        ...state,
+        currentUser: state.currentUser
+          ? { ...state.currentUser, username: action.payload }
+          : null,
+      };
+    case "UPDATE_PROFILE_IMAGE":
+      return {
+        ...state,
+        currentUser: state.currentUser
+          ? { ...state.currentUser, profileImage: action.payload }
+          : null,
+      };
+    case "UPDATE_PASSWORD":
+      return {
+        ...state,
+        currentUser: state.currentUser ? { ...state.currentUser } : null,
+      };
     default:
       return state;
   }

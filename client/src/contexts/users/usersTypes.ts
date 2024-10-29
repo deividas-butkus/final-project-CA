@@ -4,6 +4,9 @@ export type UsersContextType = {
   dispatch: React.Dispatch<Action>;
   addUser: (user: FormData) => Promise<void>;
   login: (credentials: { username: string; password: string }) => Promise<void>;
+  updateUsername: (newUsername: string) => Promise<void>;
+  updateProfileImage: (file: File) => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<void>;
 };
 
 export type User = {
@@ -23,4 +26,7 @@ export type UsersState = {
 export type Action =
   | { type: "SET_USERS"; payload: User[] }
   | { type: "ADD_USER"; payload: User }
-  | { type: "LOGIN"; payload: User };
+  | { type: "LOGIN"; payload: User }
+  | { type: "UPDATE_USERNAME"; payload: string }
+  | { type: "UPDATE_PROFILE_IMAGE"; payload: string }
+  | { type: "UPDATE_PASSWORD" };
