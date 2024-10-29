@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import Avatar from "../atoms/Avatar";
+import { useUsersContext } from "../../contexts/users/useUsersContext";
 
 const StyledDiv = styled.div`
   display: flex;
@@ -10,13 +11,16 @@ const StyledDiv = styled.div`
 `;
 
 const UserNavBox = () => {
+  const { currentUser } = useUsersContext();
+  console.log(currentUser);
+
   return (
     <StyledDiv>
       <div>
         <Avatar />
       </div>
       <div>
-        <div>username</div>
+        <div>{currentUser?.username}</div>
         <div>Logout</div>
       </div>
     </StyledDiv>
