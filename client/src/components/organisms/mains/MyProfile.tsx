@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import styled from "styled-components";
 import Button from "../../atoms/Button";
+import ThemeToggler from "../../molecules/ThemeToggler";
 
 const StyledSection = styled.section`
   display: flex;
@@ -13,7 +14,11 @@ const StyledSection = styled.section`
     align-items: center;
     gap: 20px;
   }
-
+  > div.headerAndMode {
+    color: ${({ theme }) => theme.text};
+    display: flex;
+    justify-content: space-between;
+  }
   > div.profileImage {
     height: 300px;
     > img {
@@ -79,7 +84,13 @@ const MyProfile = () => {
 
   return (
     <StyledSection>
-      <h2>My Profile</h2>
+      <div className="headerAndMode">
+        <h2>My Profile</h2>
+        <div>
+          <span>Mode</span>
+          <ThemeToggler />
+        </div>
+      </div>
 
       <div>
         {isEditingUsername ? (
