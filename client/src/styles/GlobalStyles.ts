@@ -18,9 +18,17 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     transition: transform 0.2s ease;
     &:hover {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
   }
+
+  button {
+    transition: transform 0.2s ease;
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
 `;
 
 export default GlobalStyles;
