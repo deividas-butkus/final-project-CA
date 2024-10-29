@@ -1,7 +1,7 @@
 export const lightTheme = {
   background: "#fff",
   text: "#2e2e2e",
-  accent: "#243b55",
+  accent: "#4E84C5",
   buttonBg: "#8de5f2",
   buttonText: "#243b55",
   border: "#1F3B4D",
