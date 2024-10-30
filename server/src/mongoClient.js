@@ -5,6 +5,7 @@ const MONGO_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWOR
 let client;
 let dbInstance;
 export let usersCollection;
+export let chatsCollection;
 
 export const connectToDb = async () => {
   if (!client) {
@@ -17,8 +18,11 @@ export const connectToDb = async () => {
       console.log("Connected to MongoDB");
 
       dbInstance = client.db(process.env.DB_NAME);
+
       usersCollection = dbInstance.collection("users");
-      console.log("Users collection ready.");
+      chatsCollection = dbInstance.collection("chats");
+
+      console.log("✅users and ✅chats collection ready.");
     } catch (error) {
       console.error("Failed to connect to MongoDB", error);
       throw error;
@@ -34,6 +38,7 @@ const gracefulShutdown = async (signal) => {
     try {
       await client.close();
       console.log("MongoDB connection closed.");
+      console.log("--------------------------");
     } catch (error) {
       console.error("Error while closing MongoDB connection", error);
     }
