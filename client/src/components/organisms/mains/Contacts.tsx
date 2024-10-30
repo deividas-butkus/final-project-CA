@@ -1,18 +1,34 @@
+import { useEffect } from "react";
+import styled from "styled-components";
+
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
+import ContactCard from "../../molecules/ContactCard";
+
+const StyledSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
 
 const Contacts = () => {
-  const { users } = useUsersContext();
-  console.log("Users in Contacts component:", users);
+  const { users, currentUser, fetchUsers } = useUsersContext();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const otherUsers = users.filter((user) => user._id !== currentUser?._id);
 
   return (
-    <section>
+    <StyledSection>
       <h2>Contacts</h2>
-      {users.length > 0 ? (
-        users.map((user) => <div key={user._id}>{user.username}</div>)
-      ) : (
-        <p>No users found.</p>
+      {currentUser && (
+        <ContactCard key={currentUser._id} userId={currentUser._id} />
       )}
-    </section>
+      {otherUsers.map((user) => (
+        <ContactCard key={user._id} userId={user._id} />
+      ))}
+    </StyledSection>
   );
 };
 
