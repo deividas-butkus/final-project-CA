@@ -7,6 +7,7 @@ import Landing from "./components/organisms/mains/Landing";
 import Register from "./components/organisms/mains/Register";
 import Login from "./components/organisms/mains/Login";
 import MyProfile from "./components/organisms/mains/MyProfile";
+import Contacts from "./components/organisms/mains/Contacts";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/user" element={<MyProfile />} />
+          <Route path="/contacts" element={<Contacts />} />
         </Route>
       </Routes>
     </>
