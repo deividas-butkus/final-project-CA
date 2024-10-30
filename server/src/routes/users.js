@@ -70,7 +70,7 @@ router.get("/current", authenticateToken, async (req, res) => {
 // Route for getting all users
 router.get("/", authenticateToken, async (req, res) => {
   try {
-    const users = await usersCollection.find().toArray();
+    const users = await usersCollection.find().sort({ username: 1 }).toArray();
     res.status(200).json(users);
   } catch (err) {
     console.error("Error fetching users:", err);
