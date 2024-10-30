@@ -14,6 +14,14 @@ const GlobalStyles = createGlobalStyle`
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
+  h2 {
+    font-weight: 300;
+  }
+
+  h3 {
+    font-weight: 300;
+  }
+
   a {
     text-decoration: none;
     transition: transform 0.2s ease;

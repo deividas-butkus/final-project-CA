@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 const StyledButton = styled.button<Props>`
   font-family: inherit;
+  font-weight: 300;
   border: 1px solid transparent;
   width: ${({ $width }) => $width || "auto"};
   font-size: ${({ $fontSize }) => $fontSize || "14px"};

@@ -16,6 +16,7 @@ const StyledNav = styled.nav`
       list-style-type: none;
 
       a {
+        font-weight: 300;
         color: inherit;
         text-decoration: none;
         display: inline-block;
