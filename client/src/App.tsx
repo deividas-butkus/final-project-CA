@@ -8,6 +8,7 @@ import Register from "./components/organisms/mains/Register";
 import Login from "./components/organisms/mains/Login";
 import MyProfile from "./components/organisms/mains/MyProfile";
 import Contacts from "./components/organisms/mains/Contacts";
+import Chats from "./components/organisms/mains/Chats";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/user" element={<MyProfile />} />
           <Route path="/contacts" element={<Contacts />} />
+          <Route path="/chats" element={<Chats />} />
         </Route>
       </Routes>
     </>
