@@ -19,28 +19,29 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+  const fetchUsers = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-      try {
-        const response = await fetch("/api/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          dispatch({ type: "SET_USERS", payload: data });
-        } else {
-          console.error("Failed to fetch users:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
+    try {
+      const response = await fetch("/api/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        dispatch({ type: "SET_USERS", payload: data });
+      } else {
+        console.error("Failed to fetch users:", response.statusText);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchUsers();
     const restoreSession = async () => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -59,14 +60,11 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         }
       }
     };
-
-    fetchUsers();
     restoreSession();
   }, []);
 
   const addUser = async (formData: FormData) => {
     try {
-      // Register the user
       const response = await fetch("/api/users", {
         method: "POST",
         body: formData,
@@ -183,6 +181,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         dispatch,
         users: state.users,
         currentUser: state.currentUser,
+        fetchUsers,
         addUser,
         login,
         updateUsername,

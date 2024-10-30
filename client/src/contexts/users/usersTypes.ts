@@ -2,6 +2,7 @@ export type UsersContextType = {
   users: User[];
   currentUser: User | null;
   dispatch: React.Dispatch<Action>;
+  fetchUsers: () => Promise<void>;
   addUser: (user: FormData) => Promise<void>;
   login: (credentials: { username: string; password: string }) => Promise<void>;
   updateUsername: (newUsername: string) => Promise<void>;
