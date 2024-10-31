@@ -5,15 +5,18 @@ import { ThemesProvider as CustomThemesProvider } from "./contexts/themes/Themes
 import RootApp from "./RootApp";
 import { UsersProvider } from "./contexts/users/UsersContext";
 import { ChatsProvider } from "./contexts/chats/ChatsContext";
+import { MessagesProvider } from "./contexts/messeages/MessagesContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <UsersProvider>
         <ChatsProvider>
-          <CustomThemesProvider>
-            <RootApp />
-          </CustomThemesProvider>
+          <MessagesProvider>
+            <CustomThemesProvider>
+              <RootApp />
+            </CustomThemesProvider>
+          </MessagesProvider>
         </ChatsProvider>
       </UsersProvider>
     </BrowserRouter>
