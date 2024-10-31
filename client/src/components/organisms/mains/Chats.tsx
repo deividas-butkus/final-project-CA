@@ -1,7 +1,9 @@
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
+import { useMessagesContext } from "../../../contexts/messeages/useMessagesContext";
 
 const Chats = () => {
   const { chats } = useChatsContext();
+  const { messages } = useMessagesContext();
 
   return (
     <section>
@@ -17,6 +19,10 @@ const Chats = () => {
             </ul>
           </li>
         </ul>
+      ))}
+      <h3>Messages</h3>
+      {messages.map((m) => (
+        <div key={m._id}>{m.content}</div>
       ))}
     </section>
   );
