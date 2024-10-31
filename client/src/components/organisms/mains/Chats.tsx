@@ -1,29 +1,15 @@
-import { useChatsContext } from "../../../contexts/chats/useChatsContext";
-import { useMessagesContext } from "../../../contexts/messeages/useMessagesContext";
+import { Link } from "react-router-dom";
 
 const Chats = () => {
-  const { chats } = useChatsContext();
-  const { messages } = useMessagesContext();
+  const chatId = "123";
 
   return (
     <section>
       <h2>Chats</h2>
-      {chats.map((c) => (
-        <ul key={c._id}>
-          <li>
-            Chat ID: {c._id}
-            <ul>
-              {c.members.map((m) => (
-                <li key={m}>Participant ID: {m}</li>
-              ))}
-            </ul>
-          </li>
-        </ul>
-      ))}
-      <h3>Messages</h3>
-      {messages.map((m) => (
-        <div key={m._id}>{m.content}</div>
-      ))}
+      <div>
+        <h4>Chat with X</h4>
+        <Link to={`/chats/chat/${chatId}`}>Go to chat with X</Link>
+      </div>
     </section>
   );
 };
