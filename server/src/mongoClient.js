@@ -6,6 +6,7 @@ let client;
 let dbInstance;
 export let usersCollection;
 export let chatsCollection;
+export let messagesCollection;
 
 export const connectToDb = async () => {
   if (!client) {
@@ -21,8 +22,9 @@ export const connectToDb = async () => {
 
       usersCollection = dbInstance.collection("users");
       chatsCollection = dbInstance.collection("chats");
+      messagesCollection = dbInstance.collection("messages");
 
-      console.log("✅users and ✅chats collection ready.");
+      console.log("✅users, ✅chats, ✅messages collections ready.");
     } catch (error) {
       console.error("Failed to connect to MongoDB", error);
       throw error;
