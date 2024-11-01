@@ -1,6 +1,11 @@
-import { createContext, useReducer, useEffect } from "react";
+import {
+  createContext,
+  useReducer,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { useNavigate } from "react-router-dom";
-
 import { UsersContextType, User, UsersState } from "./usersTypes";
 import { usersReducer } from "./usersReducer";
 
@@ -16,12 +21,14 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     currentUser: null,
   };
   const [state, dispatch] = useReducer(usersReducer, initialState);
+  const [sessionRestored, setSessionRestored] = useState(false);
+  const [usersFetched, setUsersFetched] = useState(false);
 
   const navigate = useNavigate();
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token || usersFetched) return;
 
     try {
       const response = await fetch("/api/users", {
@@ -32,36 +39,44 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
       if (response.ok) {
         const data = await response.json();
         dispatch({ type: "SET_USERS", payload: data });
+        setUsersFetched(true);
       } else {
         console.error("Failed to fetch users:", response.statusText);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
     }
-  };
+  }, [usersFetched]);
+
+  const restoreSession = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (!token || sessionRestored) return;
+
+    try {
+      const response = await fetch("/api/users/current", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const userData: User = await response.json();
+        dispatch({ type: "LOGIN", payload: userData });
+        setSessionRestored(true);
+      }
+    } catch (error) {
+      console.error("Failed to restore session:", error);
+    }
+  }, [sessionRestored]);
 
   useEffect(() => {
-    fetchUsers();
-    const restoreSession = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const response = await fetch("/api/users/current", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (response.ok) {
-            const userData: User = await response.json();
-            dispatch({ type: "LOGIN", payload: userData });
-          }
-        } catch (error) {
-          console.error("Failed to restore session:", error);
-        }
-      }
-    };
     restoreSession();
-  }, []);
+  }, [restoreSession]);
+
+  useEffect(() => {
+    if (sessionRestored) {
+      fetchUsers();
+    }
+  }, [sessionRestored, fetchUsers]);
 
   const addUser = async (formData: FormData) => {
     try {
