@@ -1,17 +1,15 @@
 import styled from "styled-components";
 
-import Avatar from "../atoms/Avatar";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { Chat } from "../../contexts/chats/chatsTypes";
 
 const StyledArticle = styled.article`
   width: 200px;
-  background-color: grey;
   padding: 10px;
   border-radius: 10px;
   > div {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
   }
   > svg {
     display: flex;
@@ -19,18 +17,24 @@ const StyledArticle = styled.article`
   }
 `;
 
-const MessageCard = () => {
+type MessageCardProps = {
+  lastMessage: Chat["lastMessage"];
+  unreadCount: Chat["unreadCount"];
+};
+
+const MessageCard = ({ lastMessage, unreadCount }: MessageCardProps) => {
   return (
     <StyledArticle>
       <div>
-        <Avatar />
-        <div>
-          <h3>Username</h3>
-          <p>Date and time</p>
-        </div>
+        <p>{lastMessage.content}</p>
+        <p>{lastMessage.isRead ? "Read" : "Unread"}</p>
+        <p>{lastMessage.createdAt}</p>
+        <p>
+          {unreadCount > 0
+            ? `${unreadCount} unread messages`
+            : "No unread messages"}
+        </p>
       </div>
-      <p>Content</p>
-      <ThumbUpIcon />
     </StyledArticle>
   );
 };
