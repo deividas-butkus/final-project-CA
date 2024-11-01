@@ -1,14 +1,16 @@
-import { Link } from "react-router-dom";
+import { useChatsContext } from "../../../contexts/chats/useChatsContext";
+import ChatCard from "../../molecules/ChatCard";
 
 const Chats = () => {
-  const chatId = "123";
+  const { chats } = useChatsContext();
 
   return (
     <section>
       <h2>Chats</h2>
       <div>
-        <h4>Chat with X</h4>
-        <Link to={`/chats/chat/${chatId}`}>Go to chat with X</Link>
+        {chats.map((chat) => (
+          <ChatCard key={chat._id} chat={chat} />
+        ))}
       </div>
     </section>
   );
