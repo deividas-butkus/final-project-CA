@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
+import { useChatsContext } from "../../../contexts/chats/useChatsContext";
 import { loginSchema } from "../../../schemas/authSchema";
 import InputWithLabel from "../../molecules/InputWithLabel";
 import Button from "../../atoms/Button";
@@ -22,6 +23,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const { login } = useUsersContext();
+  const { fetchChats } = useChatsContext();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loginSuccess, setLoginSuccess] = useState<string | null>(null);
 
@@ -43,8 +45,9 @@ const Login = () => {
     try {
       await login({ username: data.username, password: data.password });
       setLoginSuccess("Login successful!");
+      fetchChats();
       setTimeout(() => {
-        navigate("/user");
+        navigate("/chats");
       }, 3000);
     } catch (err) {
       console.error("Failed to login:", err);
