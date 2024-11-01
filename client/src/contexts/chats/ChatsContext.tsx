@@ -1,6 +1,6 @@
 import { createContext, useReducer, useEffect } from "react";
 import { chatsReducer } from "./chatsReducer";
-import { ChatsContextType } from "./chatsTypes";
+import { Chat, ChatsContextType } from "./chatsTypes";
 
 type ChatsProviderProps = {
   children: React.ReactNode;
@@ -12,19 +12,19 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
   const initialState = { chats: [] };
   const [state, dispatch] = useReducer(chatsReducer, initialState);
 
-  const fetchChats = async () => {
+  const fetchChatsSummary = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
-      const response = await fetch("/api/chats", {
+      const response = await fetch("/api/chats/summary", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       if (response.ok) {
         const data = await response.json();
-        dispatch({ type: "SET_CHATS", payload: data });
+        dispatch({ type: "SET_CHATS_SUMMARY", payload: data });
       } else {
         console.error("Failed to fetch chats:", response.statusText);
       }
@@ -34,15 +34,37 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
   };
 
   useEffect(() => {
-    fetchChats();
+    fetchChatsSummary();
   }, []);
+
+  const fetchChatById = async (chatId: Chat["_id"]) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`/api/chats/chat/${chatId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+      } else {
+        console.error(`Failed to fetch chat ${chatId}:`, response.statusText);
+      }
+    } catch (error) {
+      console.error(`Error fetching chat ${chatId}:`, error);
+    }
+  };
 
   return (
     <ChatsContext.Provider
       value={{
         dispatch,
         chats: state.chats,
-        fetchChats,
+        fetchChatsSummary,
+        fetchChatById,
       }}
     >
       {children}

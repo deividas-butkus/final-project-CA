@@ -4,7 +4,8 @@ import { User } from "../users/usersTypes";
 export type ChatsContextType = {
   chats: Chat[];
   dispatch: React.Dispatch<Action>;
-  fetchChats: () => Promise<void>;
+  fetchChatsSummary: () => Promise<void>;
+  fetchChatById: (chatId: Chat["_id"]) => Promise<void>;
 };
 
 export type Chat = {
@@ -19,4 +20,6 @@ export type Chat = {
   unreadCount: number;
 };
 
-export type Action = { type: "SET_CHATS"; payload: Chat[] };
+export type Action =
+  | { type: "SET_CHATS_SUMMARY"; payload: Chat[] }
+  | { type: "SET_SELECTED_CHAT"; payload: Chat[] };

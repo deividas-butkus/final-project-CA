@@ -23,7 +23,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const { login } = useUsersContext();
-  const { fetchChats } = useChatsContext();
+  const { fetchChatsSummary } = useChatsContext();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loginSuccess, setLoginSuccess] = useState<string | null>(null);
 
@@ -45,7 +45,7 @@ const Login = () => {
     try {
       await login({ username: data.username, password: data.password });
       setLoginSuccess("Login successful!");
-      fetchChats();
+      fetchChatsSummary();
       setTimeout(() => {
         navigate("/chats");
       }, 3000);

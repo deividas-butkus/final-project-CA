@@ -1,15 +1,14 @@
 import { Router } from "express";
 import { v4 as uuidv4 } from "uuid";
-
-import { chatsCollection } from "../mongoClient.js";
+import { chatsCollection, messagesCollection } from "../mongoClient.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
-// Route for getting all chats
-router.get("/", authenticateToken, async (req, res) => {
+// Route for getting chat summaries
+router.get("/summary", authenticateToken, async (req, res) => {
   try {
-    const chats = await chatsCollection
+    const chatSummaries = await chatsCollection
       .aggregate([
         { $match: { members: { $in: [req.user.userId] } } },
         {
@@ -33,17 +32,29 @@ router.get("/", authenticateToken, async (req, res) => {
           },
         },
         {
-          $addFields: {
-            lastMessage: { $arrayElemAt: ["$lastMessage", 0] },
-            unreadCount: {
-              $size: {
-                $filter: {
-                  input: "$lastMessage",
-                  as: "msg",
-                  cond: { $eq: ["$$msg.isRead", false] },
+          $lookup: {
+            from: "messages",
+            let: { chatId: "$_id", userId: req.user.userId },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$chatId", "$$chatId"] },
+                      { $eq: ["$receiverId", "$$userId"] },
+                      { $eq: ["$isRead", false] },
+                    ],
+                  },
                 },
               },
-            },
+            ],
+            as: "unreadMessages",
+          },
+        },
+        {
+          $addFields: {
+            lastMessage: { $arrayElemAt: ["$lastMessage", 0] },
+            unreadCount: { $size: "$unreadMessages" },
           },
         },
         {
@@ -58,9 +69,59 @@ router.get("/", authenticateToken, async (req, res) => {
       ])
       .toArray();
 
-    res.status(200).json(chats);
+    res.status(200).json(chatSummaries);
   } catch (err) {
-    console.error("Error fetching chats:", err);
+    console.error("Error fetching chat summaries:", err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+// Route for getting a specific chat by ID
+router.get("/chat/:id", authenticateToken, async (req, res) => {
+  try {
+    const chatId = req.params.id;
+    const chat = await chatsCollection
+      .aggregate([
+        { $match: { _id: chatId, members: { $in: [req.user.userId] } } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "members",
+            foreignField: "_id",
+            as: "memberDetails",
+          },
+        },
+        {
+          $lookup: {
+            from: "messages",
+            let: { chatId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$chatId", "$$chatId"] } } },
+              { $sort: { createdAt: -1 } },
+            ],
+            as: "messages",
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            members: 1,
+            memberDetails: { _id: 1, username: 1, profileImage: 1 },
+            messages: { content: 1, isRead: 1, senderId: 1, createdAt: 1 },
+          },
+        },
+      ])
+      .toArray();
+
+    if (chat.length === 0) {
+      return res.status(404).json({ error: "Chat not found" });
+    }
+
+    res.status(200).json(chat[0]);
+  } catch (err) {
+    console.error("Error fetching chat by ID:", err);
     res
       .status(500)
       .json({ error: "Internal Server Error", message: err.message });
