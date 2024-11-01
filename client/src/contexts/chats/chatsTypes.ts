@@ -1,4 +1,4 @@
-import { Message } from "../messeages/messagesTypes";
+import { Message } from "../messages/messagesTypes";
 import { User } from "../users/usersTypes";
 
 export type ChatsContextType = {
