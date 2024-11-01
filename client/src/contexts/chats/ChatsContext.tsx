@@ -1,5 +1,4 @@
 import { createContext, useReducer, useEffect } from "react";
-
 import { chatsReducer } from "./chatsReducer";
 import { ChatsContextType } from "./chatsTypes";
 
