@@ -6,7 +6,9 @@ export type ChatsContextType = {
   dispatch: React.Dispatch<Action>;
   selectedChat: Chat | null;
   fetchChatsSummary: () => Promise<void>;
-  fetchChatById: (chatId: Chat["_id"]) => Promise<void>;
+  getOrCreateChat: (members: Chat["members"]) => Promise<Chat | null>;
+  fetchChatById: (chatId: Chat["_id"]) => Promise<Chat | null>;
+  refetchSelectedChat: (chatId: Chat["_id"]) => Promise<void>;
 };
 
 export type Chat = {
@@ -24,4 +26,4 @@ export type Chat = {
 
 export type Action =
   | { type: "SET_CHATS_SUMMARY"; payload: Chat[] }
-  | { type: "SET_SELECTED_CHAT"; payload: Chat | null };
+  | { type: "SET_SELECTED_CHAT"; payload: Chat };

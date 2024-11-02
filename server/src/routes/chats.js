@@ -32,29 +32,8 @@ router.get("/summary", authenticateToken, async (req, res) => {
           },
         },
         {
-          $lookup: {
-            from: "messages",
-            let: { chatId: "$_id", userId: req.user.userId },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$chatId", "$$chatId"] },
-                      { $eq: ["$receiverId", "$$userId"] },
-                      { $eq: ["$isRead", false] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: "unreadMessages",
-          },
-        },
-        {
           $addFields: {
             lastMessage: { $arrayElemAt: ["$lastMessage", 0] },
-            unreadCount: { $size: "$unreadMessages" },
           },
         },
         {
@@ -62,8 +41,7 @@ router.get("/summary", authenticateToken, async (req, res) => {
             _id: 1,
             members: 1,
             memberDetails: { _id: 1, username: 1, profileImage: 1 },
-            lastMessage: { _id: 1, content: 1, isRead: 1, createdAt: 1 },
-            unreadCount: 1,
+            lastMessage: { _id: 1, content: 1, createdAt: 1 },
           },
         },
       ])
@@ -78,14 +56,15 @@ router.get("/summary", authenticateToken, async (req, res) => {
   }
 });
 
-// Route for getting a specific chat by ID
+// Route for getting a specific chat by ID with all messages
 router.get("/chat/:id", authenticateToken, async (req, res) => {
   const chatId = req.params.id;
+  const userId = req.user.userId;
 
   try {
     const chat = await chatsCollection
       .aggregate([
-        { $match: { _id: chatId, members: { $in: [req.user.userId] } } },
+        { $match: { _id: chatId, members: { $in: [userId] } } },
         {
           $lookup: {
             from: "users",
@@ -100,7 +79,7 @@ router.get("/chat/:id", authenticateToken, async (req, res) => {
             let: { chatId: "$_id" },
             pipeline: [
               { $match: { $expr: { $eq: ["$chatId", "$$chatId"] } } },
-              { $sort: { createdAt: -1 } },
+              { $sort: { createdAt: 1 } }, // Sort messages in ascending order
               {
                 $project: {
                   _id: 1,
@@ -126,7 +105,9 @@ router.get("/chat/:id", authenticateToken, async (req, res) => {
       .toArray();
 
     if (chat.length === 0) {
-      return res.status(404).json({ error: "Chat not found" });
+      return res
+        .status(404)
+        .json({ error: "Chat not found or you don't have access to it." });
     }
 
     res.status(200).json(chat[0]);
@@ -135,6 +116,38 @@ router.get("/chat/:id", authenticateToken, async (req, res) => {
     res
       .status(500)
       .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+// Route for adding a chat or returning an existing one
+router.post("/chat/add", authenticateToken, async (req, res) => {
+  const { members } = req.body;
+
+  if (!Array.isArray(members) || members.length < 1) {
+    return res.status(400).json({
+      error: "At least one valid member ID is required to create a chat.",
+    });
+  }
+
+  try {
+    const existingChat = await chatsCollection.findOne({
+      members: { $all: members, $size: members.length },
+    });
+
+    if (existingChat) {
+      return res.status(200).json(existingChat);
+    }
+
+    const chat = {
+      _id: uuidv4(),
+      members,
+    };
+
+    await chatsCollection.insertOne(chat);
+    res.status(201).json(chat);
+  } catch (error) {
+    console.error("Error creating chat:", error);
+    res.status(500).json({ error: "Failed to create chat" });
   }
 });
 

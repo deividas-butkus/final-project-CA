@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect } from "react";
+import { createContext, useReducer, useEffect, useCallback } from "react";
 import { chatsReducer } from "./chatsReducer";
 import { Chat, ChatsContextType } from "../../types/ChatsTypes";
 
@@ -40,9 +40,44 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     fetchChatsSummary();
   }, []);
 
-  const fetchChatById = async (chatId: Chat["_id"]) => {
+  const getOrCreateChat = async (
+    members: Chat["members"]
+  ): Promise<Chat | null> => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) return null;
+
+    try {
+      const response = await fetch(`/api/chats/chat/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ members }),
+      });
+
+      if (response.ok) {
+        const data: Chat = await response.json();
+        dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+        // Add new chat to the chats array
+        dispatch({
+          type: "SET_CHATS_SUMMARY",
+          payload: [...state.chats, data],
+        });
+        return data;
+      } else {
+        console.error("Failed to fetch or create chat:", response.statusText);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching or creating chat:", error);
+      return null;
+    }
+  };
+
+  const fetchChatById = useCallback(async (chatId: Chat["_id"]) => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
 
     try {
       const response = await fetch(`/api/chats/chat/${chatId}`, {
@@ -50,15 +85,24 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (response.ok) {
-        const data = await response.json();
+        const data: Chat = await response.json();
         dispatch({ type: "SET_SELECTED_CHAT", payload: data });
+        return data;
       } else {
-        console.error(`Failed to fetch chat ${chatId}:`, response.statusText);
+        console.error("Failed to fetch chat by ID:", response.statusText);
+        return null;
       }
     } catch (error) {
-      console.error(`Error fetching chat ${chatId}:`, error);
+      console.error("Error fetching chat by ID:", error);
+      return null;
     }
+  }, []);
+
+  const refetchSelectedChat = async (chatId: Chat["_id"]) => {
+    // Force re-fetch and update selected chat
+    await fetchChatById(chatId);
   };
 
   return (
@@ -68,7 +112,9 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
         chats: state.chats,
         selectedChat: state.selectedChat,
         fetchChatsSummary,
+        getOrCreateChat,
         fetchChatById,
+        refetchSelectedChat,
       }}
     >
       {children}
