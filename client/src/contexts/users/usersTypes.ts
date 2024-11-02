@@ -32,4 +32,5 @@ export type Action =
   | { type: "UPDATE_USERNAME"; payload: string }
   | { type: "UPDATE_PROFILE_IMAGE"; payload: string }
   | { type: "UPDATE_PASSWORD" }
-  | { type: "LOGOUT" };
+  | { type: "LOGOUT" }
+  | { type: "CLEAR_USERS" };

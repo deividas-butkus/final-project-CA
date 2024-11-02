@@ -115,6 +115,8 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
       const { token, user } = await response.json();
       localStorage.setItem("token", token);
       dispatch({ type: "LOGIN", payload: user });
+
+      await fetchUsers();
     } catch (err) {
       console.error("Failed to login:", err);
       throw err;
@@ -185,8 +187,10 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
   };
 
   const logout = () => {
-    dispatch({ type: "LOGOUT" });
     localStorage.removeItem("token");
+    dispatch({ type: "LOGOUT" });
+    dispatch({ type: "CLEAR_USERS" });
+    setUsersFetched(false);
     navigate("/");
   };
 
