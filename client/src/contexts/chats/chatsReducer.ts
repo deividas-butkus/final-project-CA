@@ -1,6 +1,9 @@
 import { Action, Chat } from "./chatsTypes";
 
-export const chatsReducer = (state: { chats: Chat[] }, action: Action) => {
+export const chatsReducer = (
+  state: { chats: Chat[]; selectedChat: Chat | null },
+  action: Action
+) => {
   switch (action.type) {
     case "SET_CHATS_SUMMARY":
       return { ...state, chats: action.payload };
