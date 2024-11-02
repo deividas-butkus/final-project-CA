@@ -21,6 +21,7 @@ const GlobalStyles = createGlobalStyle`
   a {
     text-decoration: none;
     transition: transform 0.2s ease;
+    transform-origin: center;
     &:hover {
       transform: scale(1.05);
     }
