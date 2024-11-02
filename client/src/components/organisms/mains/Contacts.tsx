@@ -22,11 +22,9 @@ const Contacts = () => {
   return (
     <StyledSection>
       <h2>Contacts</h2>
-      {currentUser && (
-        <ContactCard key={currentUser._id} userId={currentUser._id} />
-      )}
+      {currentUser && <ContactCard key={currentUser._id} user={currentUser} />}
       {otherUsers.map((user) => (
-        <ContactCard key={user._id} userId={user._id} />
+        <ContactCard key={user._id} user={user} />
       ))}
     </StyledSection>
   );

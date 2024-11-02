@@ -1,5 +1,4 @@
 import styled from "styled-components";
-
 import { useUsersContext } from "../../contexts/users/useUsersContext";
 import { User } from "../../contexts/users/usersTypes";
 import Button from "../atoms/Button";
@@ -35,13 +34,11 @@ const StyledArticle = styled.article`
 `;
 
 type Props = {
-  userId: User["_id"];
+  user: User;
 };
 
-const ContactCard = ({ userId }: Props) => {
-  const { users, currentUser } = useUsersContext();
-
-  const user = users.find((u) => u._id === userId);
+const ContactCard = ({ user }: Props) => {
+  const { currentUser } = useUsersContext();
   const defaultProfileImage = "/api/uploads/defaultProfileImage.png";
 
   return (
@@ -49,15 +46,17 @@ const ContactCard = ({ userId }: Props) => {
       <div>
         <div>
           <img
-            src={user?.profileImage || defaultProfileImage}
-            alt={`${user?.username}'s profile`}
+            src={`${
+              user.profileImage || defaultProfileImage
+            }?t=${new Date().getTime()}`} // Cache-busting parameter
+            alt={`${user.username}'s profile`}
             onError={(e) => (e.currentTarget.src = defaultProfileImage)}
           />
         </div>
-        <h3>{user?.username}</h3>
-        {currentUser?._id === userId && <span>(You)</span>}
+        <h3>{user.username}</h3>
+        {currentUser?._id === user._id && <span>(You)</span>}
       </div>
-      <Button>{currentUser?._id !== userId ? "Chat" : "Store smth"}</Button>
+      <Button>{currentUser?._id !== user._id ? "Chat" : "Store smth"}</Button>
     </StyledArticle>
   );
 };

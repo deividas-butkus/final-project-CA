@@ -15,6 +15,7 @@ const router = Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadDir = path.join(__dirname, "..", "uploads", "profileImages");
+const defaultImagePath = "/uploads/defaultProfileImage.png"; // Path to the default image
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -97,8 +98,8 @@ router.post("/", upload.single("profileImage"), async (req, res) => {
       username,
       password: hashedPassword,
       profileImage: req.file
-        ? req.file.path
-        : "/uploads/defaultProfileImage.png",
+        ? `/uploads/profileImages/${req.file.filename}`
+        : defaultImagePath,
     };
 
     await usersCollection.insertOne(newUser);
@@ -170,7 +171,7 @@ router.patch(
       }
 
       // Delete the old image file if it exists and is not the default image
-      if (oldProfileImage && oldProfileImage !== "/default/path/to/image.jpg") {
+      if (oldProfileImage && oldProfileImage !== defaultImagePath) {
         const oldImagePath = path.join(__dirname, "..", oldProfileImage);
 
         // Check if the file exists before trying to delete it
