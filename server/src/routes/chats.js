@@ -81,7 +81,6 @@ router.get("/summary", authenticateToken, async (req, res) => {
 // Route for getting a specific chat by ID
 router.get("/chat/:id", authenticateToken, async (req, res) => {
   try {
-    const chatId = req.params.id;
     const chat = await chatsCollection
       .aggregate([
         { $match: { _id: chatId, members: { $in: [req.user.userId] } } },
@@ -109,7 +108,13 @@ router.get("/chat/:id", authenticateToken, async (req, res) => {
             _id: 1,
             members: 1,
             memberDetails: { _id: 1, username: 1, profileImage: 1 },
-            messages: { content: 1, isRead: 1, senderId: 1, createdAt: 1 },
+            messages: {
+              _id: 1,
+              content: 1,
+              isRead: 1,
+              senderId: 1,
+              createdAt: 1,
+            },
           },
         },
       ])
