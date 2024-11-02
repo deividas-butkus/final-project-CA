@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
@@ -21,17 +22,19 @@ const StyledSection = styled.section`
 
 const Chat = () => {
   const { chatId } = useParams<{ chatId: ChatType["_id"] }>();
-  const { chats } = useChatsContext();
+  const { selectedChat, fetchChatById } = useChatsContext();
   const { currentUser } = useUsersContext();
 
-  const chat = chats.find((c) => c._id === chatId);
+  useEffect(() => {
+    if (chatId) fetchChatById(chatId);
+  }, [chatId, fetchChatById]);
 
-  if (!chat) {
-    return <p>Chat not found</p>;
+  if (!selectedChat) {
+    return <p>Loading chat...</p>;
   }
 
-  const isSelfChat = chat.members.length === 1;
-  const otherUser = chat.memberDetails.find(
+  const isSelfChat = selectedChat.members.length === 1;
+  const otherUser = selectedChat.memberDetails.find(
     (member) => member._id !== currentUser?._id
   );
   const chatTitle = isSelfChat
@@ -56,15 +59,19 @@ const Chat = () => {
             />
           )}
 
-      {chat.lastMessage && (
-        <MessageCard
-          lastMessage={{
-            content: chat.lastMessage.content || "No message content",
-            isRead: chat.lastMessage.isRead ?? false,
-            createdAt: chat.lastMessage.createdAt || "No timestamp",
-          }}
-          unreadCount={chat.unreadCount}
-        />
+      {selectedChat.messages && selectedChat.messages.length > 0 ? (
+        selectedChat.messages.map((message) => (
+          <MessageCard
+            key={message._id}
+            message={{
+              content: message.content || "No message content",
+              isRead: message.isRead ?? false,
+              createdAt: message.createdAt || "No timestamp",
+            }}
+          />
+        ))
+      ) : (
+        <p>No messages yet</p>
       )}
     </StyledSection>
   );

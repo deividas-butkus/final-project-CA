@@ -15,23 +15,21 @@ const StyledArticle = styled.article`
   }
 `;
 
-type MessageCardProps = {
-  lastMessage: Chat["lastMessage"];
-  unreadCount: Chat["unreadCount"];
+export type MessageCardProps = {
+  message: {
+    content: string;
+    isRead: boolean;
+    createdAt: string;
+  };
 };
 
-const MessageCard = ({ lastMessage, unreadCount }: MessageCardProps) => {
+const MessageCard = ({ message }: MessageCardProps) => {
   return (
     <StyledArticle>
       <div>
-        <p>{lastMessage.content}</p>
-        <p>{lastMessage.isRead ? "Read" : "Unread"}</p>
-        <p>{lastMessage.createdAt}</p>
-        <p>
-          {unreadCount > 0
-            ? `${unreadCount} unread messages`
-            : "No unread messages"}
-        </p>
+        <p>{message.content}</p>
+        <p>{message.isRead ? "Read" : "Unread"}</p>
+        <p>{new Date(message.createdAt).toLocaleString()}</p>
       </div>
     </StyledArticle>
   );
