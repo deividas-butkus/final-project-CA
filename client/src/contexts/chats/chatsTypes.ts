@@ -24,4 +24,4 @@ export type Chat = {
 
 export type Action =
   | { type: "SET_CHATS_SUMMARY"; payload: Chat[] }
-  | { type: "SET_SELECTED_CHAT"; payload: Chat[] };
+  | { type: "SET_SELECTED_CHAT"; payload: Chat | null };

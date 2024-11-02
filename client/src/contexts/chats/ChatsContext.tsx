@@ -9,7 +9,10 @@ type ChatsProviderProps = {
 const ChatsContext = createContext<ChatsContextType | undefined>(undefined);
 
 export const ChatsProvider = ({ children }: ChatsProviderProps) => {
-  const initialState = { chats: [] };
+  const initialState: { chats: Chat[]; selectedChat: Chat | null } = {
+    chats: [],
+    selectedChat: null,
+  };
   const [state, dispatch] = useReducer(chatsReducer, initialState);
 
   const fetchChatsSummary = async () => {
@@ -63,6 +66,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
       value={{
         dispatch,
         chats: state.chats,
+        selectedChat: state.selectedChat,
         fetchChatsSummary,
         fetchChatById,
       }}
