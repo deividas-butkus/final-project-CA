@@ -5,7 +5,7 @@ import { ThemesProvider as CustomThemesProvider } from "./contexts/themes/Themes
 import RootApp from "./RootApp";
 import { UsersProvider } from "./contexts/users/UsersContext";
 import { ChatsProvider } from "./contexts/chats/ChatsContext";
-import { MessagesProvider } from "./contexts/messeages/MessagesContext";
+import { MessagesProvider } from "./contexts/messages/MessagesContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
