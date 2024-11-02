@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import MessageCard from "../../molecules/MessageCard";
-import { Chat as ChatT } from "../../../types/ChatsTypes";
+import { Chat as ChatType } from "../../../types/ChatsTypes";
 
 const StyledSection = styled.section`
   display: flex;
