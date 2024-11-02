@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-import { Chat } from "../../contexts/chats/chatsTypes";
-
 const StyledArticle = styled.article`
   width: 200px;
   padding: 10px;
