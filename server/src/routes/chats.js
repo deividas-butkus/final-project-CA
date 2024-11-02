@@ -80,6 +80,8 @@ router.get("/summary", authenticateToken, async (req, res) => {
 
 // Route for getting a specific chat by ID
 router.get("/chat/:id", authenticateToken, async (req, res) => {
+  const chatId = req.params.id; // Extract chatId from the request parameters
+
   try {
     const chat = await chatsCollection
       .aggregate([
