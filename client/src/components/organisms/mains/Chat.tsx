@@ -31,25 +31,36 @@ const StyledSection = styled.section`
 
 const Chat = () => {
   const { chatId } = useParams<{ chatId: ChatType["_id"] }>();
-  const { selectedChat, fetchChatById } = useChatsContext();
+  const { selectedChat, fetchChatById, refetchSelectedChat } =
+    useChatsContext();
   const { currentUser } = useUsersContext();
 
   const stableFetchChatById = useCallback(() => {
-    if (chatId && (!selectedChat || selectedChat._id !== chatId)) {
+    if (
+      chatId &&
+      currentUser &&
+      (!selectedChat || selectedChat._id !== chatId)
+    ) {
       fetchChatById(chatId);
     }
-  }, [chatId, fetchChatById, selectedChat]);
+  }, [chatId, currentUser, fetchChatById, selectedChat]);
 
   useEffect(() => {
     stableFetchChatById();
   }, [stableFetchChatById]);
 
-  if (!selectedChat) {
+  useEffect(() => {
+    if (selectedChat && selectedChat._id === chatId && !selectedChat.messages) {
+      refetchSelectedChat(chatId);
+    }
+  }, [selectedChat, chatId, refetchSelectedChat]);
+
+  if (!selectedChat || selectedChat._id !== chatId) {
     return <p>Loading chat...</p>;
   }
 
   const isSelfChat = selectedChat.members.length === 1;
-  const otherUser = selectedChat.memberDetails.find(
+  const otherUser = selectedChat.memberDetails?.find(
     (member) => member._id !== currentUser?._id
   );
   const chatTitle = isSelfChat

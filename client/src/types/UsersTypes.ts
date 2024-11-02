@@ -3,6 +3,7 @@ export type UsersContextType = {
   currentUser: User | null;
   dispatch: React.Dispatch<Action>;
   fetchUsers: () => Promise<void>;
+  fetchUserById: (userId: User["_id"]) => Promise<User | null>;
   addUser: (user: FormData) => Promise<void>;
   login: (credentials: { username: string; password: string }) => Promise<void>;
   updateUsername: (newUsername: string) => Promise<void>;
@@ -27,6 +28,7 @@ export type UsersState = {
 
 export type Action =
   | { type: "SET_USERS"; payload: User[] }
+  | { type: "FETCH_USER_BY_ID"; payload: User }
   | { type: "ADD_USER"; payload: User }
   | { type: "LOGIN"; payload: User }
   | { type: "UPDATE_USERNAME"; payload: string }

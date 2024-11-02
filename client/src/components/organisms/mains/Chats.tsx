@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
 import ChatCard from "../../molecules/ChatCard";
 
 const Chats = () => {
-  const { chats } = useChatsContext();
+  const { chats, fetchChatsSummary } = useChatsContext();
+
+  useEffect(() => {
+    fetchChatsSummary();
+  }, [fetchChatsSummary]);
 
   return (
     <section>

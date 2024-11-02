@@ -1,23 +1,29 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MarkUnreadChatAltIcon from "@mui/icons-material/MarkUnreadChatAlt";
+import { Link } from "react-router-dom";
+
 import { useUsersContext } from "../../contexts/users/useUsersContext";
+import { useChatsContext } from "../../contexts/chats/useChatsContext";
 import { User } from "../../types/UsersTypes";
-import Button from "../atoms/Button";
 
 const StyledArticle = styled.article`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px;
+  padding: 5px 10px;
   height: 50px;
   box-shadow: 1px 1px 3px ${({ theme }) => theme.accent};
   border-radius: 5px;
-  > div {
+  > div.userBox {
     display: flex;
     align-items: center;
     gap: 10px;
     height: 100%;
     > div {
       height: 100%;
+
       > img {
         height: 100%;
         min-width: 45px;
@@ -31,6 +37,20 @@ const StyledArticle = styled.article`
       font-size: 0.8rem;
     }
   }
+  > div.linkBox {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    > a {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: ${({ theme }) => theme.text};
+      &:hover {
+        color: ${({ theme }) => theme.accent};
+      }
+    }
+  }
 `;
 
 type Props = {
@@ -38,12 +58,23 @@ type Props = {
 };
 
 const ContactCard = ({ user }: Props) => {
+  const navigate = useNavigate();
   const { currentUser } = useUsersContext();
+  const { getOrCreateChat } = useChatsContext();
   const defaultProfileImage = "/api/uploads/defaultProfileImage.png";
+
+  const handleChatClick = async () => {
+    if (user && currentUser?._id) {
+      const chat = await getOrCreateChat([user._id, currentUser._id]);
+      if (chat) {
+        navigate(`/chats/chat/${chat._id}`);
+      }
+    }
+  };
 
   return (
     <StyledArticle>
-      <div>
+      <div className="userBox">
         <div>
           <img
             src={`${
@@ -56,7 +87,16 @@ const ContactCard = ({ user }: Props) => {
         <h3>{user.username}</h3>
         {currentUser?._id === user._id && <span>(You)</span>}
       </div>
-      <Button>{currentUser?._id !== user._id ? "Chat" : "Store smth"}</Button>
+      <div className="linkBox">
+        <Link to={`/contacts/contact/${user._id}`}>
+          <span>View profile</span>
+          <AccountCircleIcon />
+        </Link>
+        <button onClick={handleChatClick}>
+          <span>Chat with {user.username}</span>
+          <MarkUnreadChatAltIcon />
+        </button>
+      </div>
     </StyledArticle>
   );
 };

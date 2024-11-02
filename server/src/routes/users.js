@@ -81,6 +81,23 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
+// Route to get a user by ID
+router.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await usersCollection.findOne({ _id: id });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    delete user.password;
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Route for posting user
 router.post("/", upload.single("profileImage"), async (req, res) => {
   const { username, password } = req.body;
