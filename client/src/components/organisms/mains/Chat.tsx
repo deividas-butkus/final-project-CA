@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
@@ -7,16 +7,25 @@ import MessageCard from "../../molecules/MessageCard";
 import { Chat as ChatType } from "../../../types/ChatsTypes";
 
 const StyledSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  background-color: #135244;
-  padding: 30px;
-  border-radius: 15px;
-  > img {
-    width: 50px;
-    height: 50px;
-    border-radius: 7px;
+  > div.chatHeader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    > img {
+      width: 50px;
+      height: 50px;
+      border-radius: 7px;
+    }
+  }
+  > div.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #135244;
+    padding: 30px;
+    border-radius: 15px;
+    align-items: flex-start;
   }
 `;
 
@@ -25,9 +34,15 @@ const Chat = () => {
   const { selectedChat, fetchChatById } = useChatsContext();
   const { currentUser } = useUsersContext();
 
+  const stableFetchChatById = useCallback(() => {
+    if (chatId && (!selectedChat || selectedChat._id !== chatId)) {
+      fetchChatById(chatId);
+    }
+  }, [chatId, fetchChatById, selectedChat]);
+
   useEffect(() => {
-    if (chatId) fetchChatById(chatId);
-  }, [chatId, fetchChatById]);
+    stableFetchChatById();
+  }, [stableFetchChatById]);
 
   if (!selectedChat) {
     return <p>Loading chat...</p>;
@@ -43,36 +58,41 @@ const Chat = () => {
 
   return (
     <StyledSection>
-      <h2>{chatTitle}</h2>
+      <div className="chatHeader">
+        <h2>{chatTitle}</h2>
+        {isSelfChat
+          ? currentUser?.profileImage && (
+              <img
+                src={currentUser.profileImage}
+                alt={`${currentUser.username}'s image`}
+              />
+            )
+          : otherUser?.profileImage && (
+              <img
+                src={otherUser.profileImage}
+                alt={`${otherUser.username}'s avatar`}
+              />
+            )}
+      </div>
 
-      {isSelfChat
-        ? currentUser?.profileImage && (
-            <img
-              src={currentUser.profileImage}
-              alt={`${currentUser.username}'s image`}
+      <div className="messages">
+        {selectedChat.messages && selectedChat.messages.length > 0 ? (
+          selectedChat.messages.map((message) => (
+            <MessageCard
+              key={message._id}
+              message={{
+                _id: message._id,
+                content: message.content,
+                isRead: message.isRead ?? false,
+                createdAt: message.createdAt || "No timestamp",
+              }}
+              isCurrentUser={message.userId === currentUser?._id}
             />
-          )
-        : otherUser?.profileImage && (
-            <img
-              src={otherUser.profileImage}
-              alt={`${otherUser.username}'s avatar`}
-            />
-          )}
-
-      {selectedChat.messages && selectedChat.messages.length > 0 ? (
-        selectedChat.messages.map((message) => (
-          <MessageCard
-            key={message._id}
-            message={{
-              content: message.content || "No message content",
-              isRead: message.isRead ?? false,
-              createdAt: message.createdAt || "No timestamp",
-            }}
-          />
-        ))
-      ) : (
-        <p>No messages yet</p>
-      )}
+          ))
+        ) : (
+          <p>No messages yet</p>
+        )}
+      </div>
     </StyledSection>
   );
 };

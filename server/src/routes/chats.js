@@ -62,7 +62,7 @@ router.get("/summary", authenticateToken, async (req, res) => {
             _id: 1,
             members: 1,
             memberDetails: { _id: 1, username: 1, profileImage: 1 },
-            lastMessage: { content: 1, isRead: 1, createdAt: 1 },
+            lastMessage: { _id: 1, content: 1, isRead: 1, createdAt: 1 },
             unreadCount: 1,
           },
         },
@@ -80,7 +80,7 @@ router.get("/summary", authenticateToken, async (req, res) => {
 
 // Route for getting a specific chat by ID
 router.get("/chat/:id", authenticateToken, async (req, res) => {
-  const chatId = req.params.id; // Extract chatId from the request parameters
+  const chatId = req.params.id;
 
   try {
     const chat = await chatsCollection
@@ -101,6 +101,15 @@ router.get("/chat/:id", authenticateToken, async (req, res) => {
             pipeline: [
               { $match: { $expr: { $eq: ["$chatId", "$$chatId"] } } },
               { $sort: { createdAt: -1 } },
+              {
+                $project: {
+                  _id: 1,
+                  content: 1,
+                  isRead: 1,
+                  userId: 1,
+                  createdAt: 1,
+                },
+              },
             ],
             as: "messages",
           },
@@ -110,13 +119,7 @@ router.get("/chat/:id", authenticateToken, async (req, res) => {
             _id: 1,
             members: 1,
             memberDetails: { _id: 1, username: 1, profileImage: 1 },
-            messages: {
-              _id: 1,
-              content: 1,
-              isRead: 1,
-              senderId: 1,
-              createdAt: 1,
-            },
+            messages: 1,
           },
         },
       ])
