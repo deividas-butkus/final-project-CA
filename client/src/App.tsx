@@ -9,6 +9,7 @@ import MyProfile from "./components/organisms/mains/MyProfile";
 import Contacts from "./components/organisms/mains/Contacts";
 import Chats from "./components/organisms/mains/Chats";
 import Chat from "./components/organisms/mains/Chat";
+import Contact from "./components/organisms/mains/Contact";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/user" element={<MyProfile />} />
           <Route path="/contacts" element={<Contacts />} />
+          <Route path="/contacts/contact/:id" element={<Contact />} />
           <Route path="/chats" element={<Chats />} />
           <Route path="/chats/chat/:chatId" element={<Chat />} />
         </Route>

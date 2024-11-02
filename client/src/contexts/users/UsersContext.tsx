@@ -78,6 +78,14 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     }
   }, [sessionRestored, fetchUsers]);
 
+  const fetchUserById = async (userId: User["_id"]): Promise<User | null> => {
+    const response = await fetch(`/api/users/user/${userId}`);
+    if (response.ok) {
+      return await response.json();
+    }
+    return null;
+  };
+
   const addUser = async (formData: FormData) => {
     try {
       const response = await fetch("/api/users", {
@@ -201,6 +209,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         users: state.users,
         currentUser: state.currentUser,
         fetchUsers,
+        fetchUserById,
         addUser,
         login,
         updateUsername,
