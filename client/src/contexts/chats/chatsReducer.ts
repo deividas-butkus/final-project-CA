@@ -1,4 +1,4 @@
-import { Action, Chat } from "./chatsTypes";
+import { Action, Chat } from "../../types/ChatsTypes";
 
 export const chatsReducer = (
   state: { chats: Chat[]; selectedChat: Chat | null },

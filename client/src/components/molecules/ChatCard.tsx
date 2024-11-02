@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { useUsersContext } from "../../contexts/users/useUsersContext";
-import { Chat as ChatType } from "../../contexts/chats/chatsTypes";
+import { Chat as ChatType } from "../../types/ChatsTypes";
 
 const StyledDiv = styled.div`
   height: auto;

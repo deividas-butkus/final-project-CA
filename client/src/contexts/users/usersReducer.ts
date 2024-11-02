@@ -1,4 +1,4 @@
-import { Action, UsersState } from "./usersTypes";
+import { Action, UsersState } from "../../types/UsersTypes";
 
 export const usersReducer = (state: UsersState, action: Action): UsersState => {
   switch (action.type) {

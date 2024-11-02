@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useUsersContext } from "../../contexts/users/useUsersContext";
-import { User } from "../../contexts/users/usersTypes";
+import { User } from "../../types/UsersTypes";
 import Button from "../atoms/Button";
 
 const StyledArticle = styled.article`

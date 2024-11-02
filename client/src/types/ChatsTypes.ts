@@ -1,5 +1,5 @@
-import { Message } from "../messages/messagesTypes";
-import { User } from "../users/usersTypes";
+import { Message } from "./MessagesTypes";
+import { User } from "./UsersTypes";
 
 export type ChatsContextType = {
   chats: Chat[];

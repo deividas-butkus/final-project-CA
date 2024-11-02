@@ -1,6 +1,6 @@
 import { createContext, useReducer, useEffect } from "react";
 import { chatsReducer } from "./chatsReducer";
-import { Chat, ChatsContextType } from "./chatsTypes";
+import { Chat, ChatsContextType } from "../../types/ChatsTypes";
 
 type ChatsProviderProps = {
   children: React.ReactNode;
