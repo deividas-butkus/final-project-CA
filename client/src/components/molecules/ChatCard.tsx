@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
 import { useUsersContext } from "../../contexts/users/useUsersContext";
 import { Chat as ChatType } from "../../types/ChatsTypes";
 
@@ -9,6 +8,10 @@ const StyledDiv = styled.div`
   > h4 {
     > a {
       color: ${({ theme }) => theme.accent};
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
   > div {
@@ -18,7 +21,6 @@ const StyledDiv = styled.div`
       height: 100px;
       width: 100px;
       object-fit: cover;
-      object-position: center;
       border-radius: 7px;
       box-shadow: 0.5px 0.5px 1px ${({ theme }) => theme.accent};
     }
@@ -33,7 +35,7 @@ const ChatCard = ({ chat }: Props) => {
   const { currentUser } = useUsersContext();
 
   const isSelfChat = chat.members.length === 1;
-  const otherUser = chat.memberDetails.find(
+  const otherUser = chat.memberDetails?.find(
     (member) => member._id !== currentUser?._id
   );
   const chatTitle = isSelfChat
@@ -48,9 +50,10 @@ const ChatCard = ({ chat }: Props) => {
       <div>
         {isSelfChat ? (
           <img
-            src={currentUser?.profileImage}
+            src={
+              currentUser?.profileImage || "/uploads/defaultProfileImage.png"
+            }
             alt={`${currentUser?.username}'s avatar`}
-            style={{}}
           />
         ) : (
           otherUser?.profileImage && (
@@ -60,27 +63,30 @@ const ChatCard = ({ chat }: Props) => {
             />
           )
         )}
-
-        {chat.lastMessage ? (
-          <div>
-            <p>{chat.lastMessage.content || "No message content available"}</p>
-            <p>
-              {chat.lastMessage.createdAt
-                ? new Date(chat.lastMessage.createdAt).toLocaleString(
-                    undefined,
-                    {
-                      month: "short",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                    }
-                  )
-                : "No timestamp available"}
-            </p>
-          </div>
-        ) : (
-          <p>No messages yet</p>
-        )}
+        <div>
+          {chat.lastMessage ? (
+            <>
+              <p>
+                {chat.lastMessage.content || "No message content available"}
+              </p>
+              <p>
+                {chat.lastMessage.createdAt
+                  ? new Date(chat.lastMessage.createdAt).toLocaleString(
+                      undefined,
+                      {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                      }
+                    )
+                  : "No timestamp available"}
+              </p>
+            </>
+          ) : (
+            <p>No messages yet</p>
+          )}
+        </div>
       </div>
     </StyledDiv>
   );
