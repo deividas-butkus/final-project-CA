@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import SendIcon from "@mui/icons-material/Send";
@@ -29,6 +29,11 @@ const StyledSection = styled.section`
     padding: 30px;
     border-radius: 15px;
     align-items: flex-start;
+    min-height: 400px;
+    overflow-y: auto;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 `;
 
@@ -52,12 +57,18 @@ const StyledButton = styled.button<{ disabled?: boolean }>`
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;
 
+const Spacer = styled.div`
+  height: 5vh;
+`;
+
 const Chat = () => {
   const { chatId } = useParams<{ chatId: ChatType["_id"] }>();
-  const { selectedChat, fetchChatById, refetchSelectedChat } =
+  const { selectedChat, fetchChatById, refetchSelectedChat, addMessage } =
     useChatsContext();
   const { currentUser } = useUsersContext();
   const [messageInput, setMessageInput] = useState("");
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const stableFetchChatById = useCallback(() => {
     if (
@@ -79,6 +90,15 @@ const Chat = () => {
     }
   }, [selectedChat, chatId, refetchSelectedChat]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [selectedChat?.messages]);
+
   if (!selectedChat || selectedChat._id !== chatId) {
     return <p>Loading chat...</p>;
   }
@@ -97,11 +117,20 @@ const Chat = () => {
     setMessageInput(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(messageInput);
-    console.log(messageInput);
-    setMessageInput("");
+
+    if (!currentUser?._id) {
+      console.error("User ID is undefined. Cannot send message.");
+      return;
+    }
+
+    try {
+      await addMessage(chatId, messageInput, currentUser._id);
+      setMessageInput("");
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
   };
 
   return (
@@ -140,6 +169,8 @@ const Chat = () => {
         ) : (
           <p>No messages yet</p>
         )}
+        <Spacer />
+        <div ref={messagesEndRef} />
       </div>
       <StyledForm onSubmit={handleSubmit}>
         <InputWithLabel
