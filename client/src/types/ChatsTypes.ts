@@ -9,6 +9,11 @@ export type ChatsContextType = {
   getOrCreateChat: (members: Chat["members"]) => Promise<Chat | null>;
   fetchChatById: (chatId: Chat["_id"]) => Promise<Chat | null>;
   refetchSelectedChat: (chatId: Chat["_id"]) => Promise<void>;
+  addMessage: (
+    chatId: Chat["_id"],
+    content: Message["content"],
+    userId: User["_id"]
+  ) => Promise<void>;
 };
 
 export type Chat = {
@@ -26,4 +31,8 @@ export type Chat = {
 
 export type Action =
   | { type: "SET_CHATS_SUMMARY"; payload: Chat[] }
-  | { type: "SET_SELECTED_CHAT"; payload: Chat };
+  | { type: "SET_SELECTED_CHAT"; payload: Chat }
+  | {
+      type: "ADD_MESSAGE";
+      payload: { chatId: Chat["_id"]; message: Message };
+    };

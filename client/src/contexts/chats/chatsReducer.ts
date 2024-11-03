@@ -1,4 +1,6 @@
 import { Action, Chat } from "../../types/ChatsTypes";
+import { Message } from "../../types/MessagesTypes";
+import { User } from "../../types/UsersTypes";
 
 type State = {
   chats: Chat[];
@@ -18,6 +20,26 @@ export const chatsReducer = (state: State, action: Action): State => {
         return {
           ...state,
           chats: Array.isArray(action.payload) ? action.payload : [],
+        };
+      }
+      return state;
+    },
+    ADD_MESSAGE: () => {
+      if (
+        state.selectedChat &&
+        state.selectedChat._id ===
+          (action.payload as { chatId: User["_id"]; message: Message }).chatId
+      ) {
+        return {
+          ...state,
+          selectedChat: {
+            ...state.selectedChat,
+            messages: [
+              ...(state.selectedChat.messages || []),
+              (action.payload as { chatId: Chat["_id"]; message: Message })
+                .message,
+            ],
+          },
         };
       }
       return state;
