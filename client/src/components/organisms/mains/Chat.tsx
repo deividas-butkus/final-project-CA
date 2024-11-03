@@ -1,10 +1,13 @@
-import { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import SendIcon from "@mui/icons-material/Send";
+
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import MessageCard from "../../molecules/MessageCard";
 import { Chat as ChatType } from "../../../types/ChatsTypes";
+import InputWithLabel from "../../molecules/InputWithLabel";
 
 const StyledSection = styled.section`
   > div.chatHeader {
@@ -29,11 +32,32 @@ const StyledSection = styled.section`
   }
 `;
 
+const StyledForm = styled.form`
+  position: sticky;
+  bottom: 0%;
+`;
+
+const StyledButton = styled.button<{ disabled?: boolean }>`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0 10px 5px 0;
+  background: none;
+  background-color: transparent;
+  color: ${({ theme }) => theme.text};
+  border: none;
+  outline: none;
+  box-shadow: none;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+`;
+
 const Chat = () => {
   const { chatId } = useParams<{ chatId: ChatType["_id"] }>();
   const { selectedChat, fetchChatById, refetchSelectedChat } =
     useChatsContext();
   const { currentUser } = useUsersContext();
+  const [messageInput, setMessageInput] = useState("");
 
   const stableFetchChatById = useCallback(() => {
     if (
@@ -66,6 +90,19 @@ const Chat = () => {
   const chatTitle = isSelfChat
     ? "Store something for myself"
     : `Chat with ${otherUser?.username || "Unknown User"}`;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setMessageInput(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(messageInput);
+    console.log(messageInput);
+    setMessageInput("");
+  };
 
   return (
     <StyledSection>
@@ -104,6 +141,19 @@ const Chat = () => {
           <p>No messages yet</p>
         )}
       </div>
+      <StyledForm onSubmit={handleSubmit}>
+        <InputWithLabel
+          type="textarea"
+          label=""
+          name="message"
+          value={messageInput}
+          onChange={handleChange}
+          placeholder="Aa"
+        />
+        <StyledButton type="submit" disabled={!messageInput.trim()}>
+          <SendIcon />
+        </StyledButton>
+      </StyledForm>
     </StyledSection>
   );
 };
