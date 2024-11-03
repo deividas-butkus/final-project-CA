@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useRef, useEffect } from "react";
 import styled, { DefaultTheme } from "styled-components";
 import Button from "../atoms/Button";
 
@@ -54,15 +54,22 @@ const inputStyles = `
 // Styled input component
 const StyledInput = styled.input<StyledInputProps>`
   ${inputStyles}
-  padding: ${({ padding }) => padding || "8px"};
+  padding: ${({ $padding }) => $padding || "8px"};
 `;
 
 // Styled textarea component with additional textarea-specific styles
 const StyledTextarea = styled.textarea<StyledInputProps>`
   ${inputStyles}
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
   background-color: ${({ theme }) => (theme as DefaultTheme).background};
   color: ${({ theme }) => (theme as DefaultTheme).text};
+  padding: ${({ $padding }) => $padding || "8px"};
+  line-height: 1.5; /* Adjust this based on your font size */
+  min-height: calc(
+    1.5em + ${({ $padding }) => $padding || "16px"}
+  ); /* Ensures a single line height plus padding */
+  box-sizing: border-box;
 `;
 
 // Error message styling
@@ -73,7 +80,7 @@ const ErrorMessage = styled.span`
 
 // Define the type for StyledInputProps if not already defined
 type StyledInputProps = {
-  padding?: string;
+  $padding?: string;
   $borderColor?: string;
 };
 
@@ -125,6 +132,23 @@ const InputWithLabel = forwardRef<
   ) => {
     const borderColor = error ? errorBorderColor : inputBorderColor;
     const [fileChosen, setFileChosen] = useState(false);
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+    const resizeTextarea = () => {
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto"; // Reset height to auto
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set height to scrollHeight to fit content
+      }
+    };
+
+    useEffect(() => {
+      resizeTextarea();
+    }, [value]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange(e);
+      resizeTextarea();
+    };
 
     const handleFileButtonClick = (e?: React.MouseEvent<HTMLButtonElement>) => {
       e?.preventDefault();
@@ -189,12 +213,17 @@ const InputWithLabel = forwardRef<
             id={name}
             name={name}
             value={value as string}
-            onChange={onChange}
+            onChange={handleChange}
             onBlur={onBlur}
             placeholder={placeholder}
-            padding={inputPadding}
+            $padding={inputPadding}
             $borderColor={borderColor}
-            ref={ref as React.Ref<HTMLTextAreaElement>}
+            ref={(element) => {
+              textareaRef.current = element;
+              if (typeof ref === "function") ref(element);
+              else if (ref) ref.current = element;
+            }}
+            rows={1}
           />
         ) : (
           <StyledInput
@@ -205,7 +234,7 @@ const InputWithLabel = forwardRef<
             onChange={onChange}
             onBlur={onBlur}
             placeholder={placeholder}
-            padding={inputPadding}
+            $padding={inputPadding}
             $borderColor={borderColor}
             ref={ref as React.Ref<HTMLInputElement>}
           />
