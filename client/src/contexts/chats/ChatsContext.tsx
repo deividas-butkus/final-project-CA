@@ -1,6 +1,8 @@
 import { createContext, useReducer, useEffect, useCallback } from "react";
 import { chatsReducer } from "./chatsReducer";
 import { Chat, ChatsContextType } from "../../types/ChatsTypes";
+import { Message } from "../../types/MessagesTypes";
+import { User } from "../../types/UsersTypes";
 
 type ChatsProviderProps = {
   children: React.ReactNode;
@@ -105,6 +107,38 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     await fetchChatById(chatId);
   };
 
+  const addMessage = async (
+    chatId: Chat["_id"],
+    content: Message["content"],
+    userId: User["_id"]
+  ) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`/api/messages/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ chatId, content, userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add message");
+      }
+
+      const newMessage = await response.json();
+      dispatch({
+        type: "ADD_MESSAGE",
+        payload: { chatId, message: newMessage },
+      });
+    } catch (error) {
+      console.error("Error in addMessage:", error);
+    }
+  };
+
   return (
     <ChatsContext.Provider
       value={{
@@ -115,6 +149,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
         getOrCreateChat,
         fetchChatById,
         refetchSelectedChat,
+        addMessage,
       }}
     >
       {children}

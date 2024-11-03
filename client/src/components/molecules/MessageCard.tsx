@@ -31,10 +31,16 @@ const MessageCard = ({ message, isCurrentUser }: MessageCardProps) => {
   return (
     <StyledArticle $isCurrentUser={isCurrentUser}>
       <div>
-        <p>Message ID: {message._id}</p>
         <p>{message.content}</p>
-        <p>{message.isRead ? "Read" : "Unread"}</p>
-        <p>{new Date(message.createdAt).toLocaleString()}</p>
+        {/* <p>{message.isRead ? "Read" : "Unread"}</p> */}
+        <p>
+          {new Date(message.createdAt).toLocaleString(undefined, {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })}
+        </p>
       </div>
     </StyledArticle>
   );

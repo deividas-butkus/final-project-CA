@@ -1,10 +1,13 @@
-import { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import SendIcon from "@mui/icons-material/Send";
+
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import MessageCard from "../../molecules/MessageCard";
 import { Chat as ChatType } from "../../../types/ChatsTypes";
+import InputWithLabel from "../../molecules/InputWithLabel";
 
 const StyledSection = styled.section`
   > div.chatHeader {
@@ -26,14 +29,46 @@ const StyledSection = styled.section`
     padding: 30px;
     border-radius: 15px;
     align-items: flex-start;
+    min-height: 400px;
+    overflow-y: auto;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+`;
+
+const StyledForm = styled.form`
+  position: sticky;
+  bottom: 0%;
+`;
+
+const StyledButton = styled.button<{ disabled?: boolean }>`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0 10px 5px 0;
+  background: none;
+  background-color: transparent;
+  color: ${({ theme }) => theme.text};
+  border: none;
+  outline: none;
+  box-shadow: none;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+`;
+
+const Spacer = styled.div`
+  height: 5vh;
 `;
 
 const Chat = () => {
   const { chatId } = useParams<{ chatId: ChatType["_id"] }>();
-  const { selectedChat, fetchChatById, refetchSelectedChat } =
+  const { selectedChat, fetchChatById, refetchSelectedChat, addMessage } =
     useChatsContext();
   const { currentUser } = useUsersContext();
+  const [messageInput, setMessageInput] = useState("");
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const stableFetchChatById = useCallback(() => {
     if (
@@ -55,6 +90,15 @@ const Chat = () => {
     }
   }, [selectedChat, chatId, refetchSelectedChat]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [selectedChat?.messages]);
+
   if (!selectedChat || selectedChat._id !== chatId) {
     return <p>Loading chat...</p>;
   }
@@ -66,6 +110,28 @@ const Chat = () => {
   const chatTitle = isSelfChat
     ? "Store something for myself"
     : `Chat with ${otherUser?.username || "Unknown User"}`;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setMessageInput(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!currentUser?._id) {
+      console.error("User ID is undefined. Cannot send message.");
+      return;
+    }
+
+    try {
+      await addMessage(chatId, messageInput, currentUser._id);
+      setMessageInput("");
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
+  };
 
   return (
     <StyledSection>
@@ -103,7 +169,22 @@ const Chat = () => {
         ) : (
           <p>No messages yet</p>
         )}
+        <Spacer />
+        <div ref={messagesEndRef} />
       </div>
+      <StyledForm onSubmit={handleSubmit}>
+        <InputWithLabel
+          type="textarea"
+          label=""
+          name="message"
+          value={messageInput}
+          onChange={handleChange}
+          placeholder="Aa"
+        />
+        <StyledButton type="submit" disabled={!messageInput.trim()}>
+          <SendIcon />
+        </StyledButton>
+      </StyledForm>
     </StyledSection>
   );
 };
