@@ -6,6 +6,7 @@ export const lightTheme = {
   buttonText: "#243b55",
   border: "#1F3B4D",
   error: "#D91924",
+  active: "#ff4500",
 };
 
 export const darkTheme = {
@@ -16,4 +17,5 @@ export const darkTheme = {
   buttonText: "#8de5f2",
   border: "#1F3B4D",
   error: "#FE0605",
+  active: "#ff4500",
 };

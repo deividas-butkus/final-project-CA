@@ -32,13 +32,12 @@ const StyledSection = styled.section`
     gap: 10px;
     width: fit-content;
     padding: 5px 10px;
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.accent};
     background: none;
     border: none;
     cursor: pointer;
     transition: transform 0.2s ease;
     &:hover {
-      color: ${({ theme }) => theme.accent};
       transform: scale(1.05);
     }
   }

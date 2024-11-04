@@ -32,7 +32,7 @@ const StyledArticle = styled.article`
       gap: 10px;
       height: 100%;
       > span {
-        color: ${({ theme }) => theme.text};
+        color: ${({ theme }) => theme.active};
         font-size: 0.8rem;
       }
     }
@@ -68,7 +68,7 @@ const ContactCard = ({ user }: Props) => {
           <img
             src={`${
               user.profileImage || defaultProfileImage
-            }?t=${new Date().getTime()}`} // Cache-busting parameter
+            }?t=${new Date().getTime()}`}
             alt={`${user.username}'s profile`}
             onError={(e) => (e.currentTarget.src = defaultProfileImage)}
           />
