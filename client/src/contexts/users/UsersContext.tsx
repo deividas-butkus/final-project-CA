@@ -150,9 +150,26 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     }
   };
 
-  const updateProfileImage = async (file: File) => {
+  const updateProfileImage = async (file: File | null) => {
     try {
       const token = localStorage.getItem("token");
+
+      if (file === null) {
+        const response = await fetch("/api/users/resetProfileImage", {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) throw new Error("Failed to reset profile image");
+
+        dispatch({
+          type: "UPDATE_PROFILE_IMAGE",
+          payload: "/uploads/defaultProfileImage.png",
+        });
+        return;
+      }
+
       const formData = new FormData();
       formData.append("profileImage", file);
 

@@ -44,6 +44,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login({ username: data.username, password: data.password });
+      setLoginError(null);
       setLoginSuccess("Login successful!");
       fetchChatsSummary();
       setTimeout(() => {
