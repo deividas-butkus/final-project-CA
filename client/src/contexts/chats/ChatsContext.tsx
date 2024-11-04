@@ -139,6 +139,28 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     }
   };
 
+  const deleteChat = async (chatId: Chat["_id"]) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`/api/chats/chat/delete/${chatId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete chat");
+      }
+
+      dispatch({ type: "DELETE_CHAT", payload: { chatId } });
+    } catch (error) {
+      console.error("Error in deleteChat", error);
+    }
+  };
+
   return (
     <ChatsContext.Provider
       value={{
@@ -150,6 +172,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
         fetchChatById,
         refetchSelectedChat,
         addMessage,
+        deleteChat,
       }}
     >
       {children}
