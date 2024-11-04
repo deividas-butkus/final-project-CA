@@ -10,8 +10,12 @@ const StyledDiv = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+  transition: transform 0.2s ease;
   div.username {
-    color: ${({ theme }) => theme.accent};
+    color: ${({ theme }) => theme.active};
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 `;
 
@@ -20,7 +24,7 @@ const StyledButton = styled.button`
   align-items: center;
   gap: 7px;
   background-color: transparent;
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.accent};
   padding: 0;
   border: none;
   outline: none;
