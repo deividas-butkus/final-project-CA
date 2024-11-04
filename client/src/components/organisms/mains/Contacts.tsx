@@ -7,7 +7,8 @@ import ContactCard from "../../molecules/ContactCard";
 const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
+  margin-bottom: 50px;
 `;
 
 const Contacts = () => {
