@@ -45,9 +45,6 @@ const StyledDiv = styled.div`
       }
     }
   }
-  > button:hover {
-    background-color: ${({ theme }) => theme.error};
-  }
 `;
 
 type Props = {
@@ -116,7 +113,9 @@ const ChatCard = ({ chat }: Props) => {
           </div>
         </div>
       </Link>
-      <Button onClick={handleDelete}>Delete Chat</Button>
+      <Button className="delete" onClick={handleDelete}>
+        Delete Chat
+      </Button>
     </StyledDiv>
   );
 };
