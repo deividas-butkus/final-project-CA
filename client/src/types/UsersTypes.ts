@@ -7,7 +7,7 @@ export type UsersContextType = {
   addUser: (user: FormData) => Promise<void>;
   login: (credentials: { username: string; password: string }) => Promise<void>;
   updateUsername: (newUsername: string) => Promise<void>;
-  updateProfileImage: (file: File) => Promise<void>;
+  updateProfileImage: (file: File | null) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
   logout: () => void;
 };

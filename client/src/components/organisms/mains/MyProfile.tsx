@@ -10,6 +10,7 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
   margin-bottom: 50px;
+
   div.headerAndMode {
     color: ${({ theme }) => theme.text};
     display: flex;
@@ -51,10 +52,14 @@ const StyledSection = styled.section`
     gap: 20px;
   }
   div.buttonContainer {
-    margin-left: auto;
     display: flex;
     gap: 10px;
     margin-top: 10px;
+    &.imageButtons {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
   }
   hr {
     border: 0;
@@ -64,8 +69,13 @@ const StyledSection = styled.section`
 `;
 
 const MyProfile = () => {
-  const { currentUser, updateUsername, updateProfileImage, updatePassword } =
-    useUsersContext();
+  const {
+    currentUser,
+    updateUsername,
+    updateProfileImage,
+    updatePassword,
+    dispatch,
+  } = useUsersContext();
 
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [isEditingProfileImage, setIsEditingProfileImage] = useState(false);
@@ -138,6 +148,17 @@ const MyProfile = () => {
     }
   };
 
+  const handleDeleteProfileImage = () => {
+    setTempProfileImage("/uploads/defaultProfileImage.png");
+    updateProfileImage(null);
+    setIsEditingProfileImage(false);
+
+    dispatch({
+      type: "UPDATE_PROFILE_IMAGE",
+      payload: "/uploads/defaultProfileImage.png",
+    });
+  };
+
   if (loading) return <p>Loading profile...</p>;
 
   return (
@@ -207,15 +228,25 @@ const MyProfile = () => {
             />
           )}
         </div>
-        <div className="buttonContainer">
+        <div className="buttonContainer imageButtons">
           {isEditingProfileImage ? (
-            <Button onClick={() => setIsEditingProfileImage(false)}>
-              Cancel
-            </Button>
+            <>
+              <Button onClick={() => setIsEditingProfileImage(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleDeleteProfileImage}>
+                Delete Profile Image
+              </Button>
+            </>
           ) : (
-            <Button onClick={() => setIsEditingProfileImage(true)}>
-              Change Profile Image
-            </Button>
+            <>
+              <Button onClick={() => setIsEditingProfileImage(true)}>
+                Change Profile Image
+              </Button>
+              <Button className="delete" onClick={handleDeleteProfileImage}>
+                Delete Profile Image
+              </Button>
+            </>
           )}
         </div>
       </div>

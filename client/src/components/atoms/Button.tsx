@@ -24,6 +24,9 @@ const StyledButton = styled.button<Props>`
   &:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
   }
+  &.delete:hover {
+    background-color: ${({ theme }) => darkenColor(theme.error || "#e74c3c")};
+  }
 `;
 
 type Props = {
@@ -35,6 +38,7 @@ type Props = {
   children: React.ReactNode;
   onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit" | "reset";
+  className?: string;
 };
 
 const darkenColor = (color: string) => {
@@ -58,6 +62,7 @@ const Button = ({
   $color,
   $padding,
   onClick,
+  className,
 }: Props) => {
   return (
     <StyledButton
@@ -67,6 +72,7 @@ const Button = ({
       $color={$color}
       $padding={$padding}
       onClick={onClick}
+      className={className}
     >
       {children}
     </StyledButton>
