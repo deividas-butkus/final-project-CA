@@ -32,10 +32,6 @@ const StyledNav = styled.nav`
         }
       }
     }
-    .chats:nth-child(2) {
-      transform: translateY(-10px);
-      margin-left: 3px;
-    }
   }
 `;
 
