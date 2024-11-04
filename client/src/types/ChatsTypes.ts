@@ -14,6 +14,7 @@ export type ChatsContextType = {
     content: Message["content"],
     userId: User["_id"]
   ) => Promise<void>;
+  deleteChat: (chatId: Chat["_id"]) => Promise<void>;
 };
 
 export type Chat = {
@@ -35,4 +36,5 @@ export type Action =
   | {
       type: "ADD_MESSAGE";
       payload: { chatId: Chat["_id"]; message: Message };
-    };
+    }
+  | { type: "DELETE_CHAT"; payload: { chatId: Chat["_id"] } };

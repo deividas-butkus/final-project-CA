@@ -151,4 +151,22 @@ router.post("/chat/add", authenticateToken, async (req, res) => {
   }
 });
 
+// Route for deletting a chat
+router.delete("/chat/delete/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await chatsCollection.deleteOne({ _id: id });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Chat not found" });
+    }
+
+    res.status(200).json({ message: "Chat deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting chat:", error);
+    res.status(500).json({ error: "Failed to delete chat" });
+  }
+});
+
 export default router;

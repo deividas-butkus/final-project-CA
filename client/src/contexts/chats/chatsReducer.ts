@@ -1,6 +1,5 @@
 import { Action, Chat } from "../../types/ChatsTypes";
 import { Message } from "../../types/MessagesTypes";
-import { User } from "../../types/UsersTypes";
 
 type State = {
   chats: Chat[];
@@ -28,7 +27,7 @@ export const chatsReducer = (state: State, action: Action): State => {
       if (
         state.selectedChat &&
         state.selectedChat._id ===
-          (action.payload as { chatId: User["_id"]; message: Message }).chatId
+          (action.payload as { chatId: Chat["_id"]; message: Message }).chatId
       ) {
         return {
           ...state,
@@ -44,6 +43,12 @@ export const chatsReducer = (state: State, action: Action): State => {
       }
       return state;
     },
+    DELETE_CHAT: () => ({
+      ...state,
+      chats: state.chats.filter(
+        (chat) => chat._id !== (action.payload as { chatId: string }).chatId
+      ),
+    }),
   };
 
   // Default state return if action type does not match any case
