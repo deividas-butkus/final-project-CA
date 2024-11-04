@@ -1,31 +1,65 @@
 import { useState, useEffect } from "react";
-import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import styled from "styled-components";
+import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import Button from "../../atoms/Button";
 import ThemeToggler from "../../molecules/ThemeToggler";
+import { usernameSchema, passwordSchema } from "../../../schemas/authSchema";
+import InputWithLabel from "../../molecules/InputWithLabel";
 
 const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 20px;
-
-  div {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  > div.headerAndMode {
+  margin-bottom: 50px;
+  div.headerAndMode {
     color: ${({ theme }) => theme.text};
     display: flex;
     justify-content: space-between;
-  }
-  > div.profileImage {
-    height: 300px;
-    > img {
-      height: 100%;
-      border-radius: 10px;
-      box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
+    > div {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+  }
+  div.profileImageContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    div.profileImage {
+      width: 100%;
+      max-width: 300px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
+      }
+    }
+  }
+  div.fieldContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  div.buttonContainer {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  hr {
+    border: 0;
+    border-top: 1px solid #524f4f;
+    margin: 20px 0;
   }
 `;
 
@@ -43,6 +77,12 @@ const MyProfile = () => {
   const [tempProfileImage, setTempProfileImage] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<
+    string | null
+  >(null);
+
   useEffect(() => {
     if (currentUser) {
       setNewUsername(currentUser.username);
@@ -53,9 +93,29 @@ const MyProfile = () => {
     }
   }, [currentUser]);
 
+  const validateUsername = () => {
+    const result = usernameSchema.safeParse(newUsername);
+    setUsernameError(result.success ? null : result.error.errors[0].message);
+  };
+
+  const validatePassword = () => {
+    const result = passwordSchema.safeParse(newPassword);
+    setPasswordError(result.success ? null : result.error.errors[0].message);
+  };
+
+  const validateConfirmPassword = () => {
+    if (newPassword !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+    } else {
+      setConfirmPasswordError(null);
+    }
+  };
+
   const handleSaveUsername = () => {
-    updateUsername(newUsername);
-    setIsEditingUsername(false);
+    if (!usernameError) {
+      updateUsername(newUsername);
+      setIsEditingUsername(false);
+    }
   };
 
   const handleProfileImageChange = (file: File) => {
@@ -70,13 +130,11 @@ const MyProfile = () => {
   };
 
   const handleSavePassword = () => {
-    if (newPassword === confirmPassword) {
+    if (!passwordError && !confirmPasswordError) {
       updatePassword(newPassword);
       setIsEditingPassword(false);
       setNewPassword("");
       setConfirmPassword("");
-    } else {
-      alert("Passwords do not match");
     }
   };
 
@@ -87,81 +145,126 @@ const MyProfile = () => {
       <div className="headerAndMode">
         <h2>My Profile</h2>
         <div>
-          <span>Mode</span>
           <ThemeToggler />
         </div>
       </div>
+      <hr />
 
-      <div>
-        {isEditingUsername ? (
-          <div>
-            <input
+      <div className="fieldContainer">
+        <div>
+          {isEditingUsername ? (
+            <InputWithLabel
+              label="Username"
               type="text"
+              name="username"
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
+              onBlur={validateUsername}
+              error={usernameError || ""}
+              placeholder="Enter new username"
             />
-            <Button onClick={handleSaveUsername}>Save</Button>
-            <Button onClick={() => setIsEditingUsername(false)}>Cancel</Button>
-          </div>
-        ) : (
-          <>
+          ) : (
             <h3>{currentUser?.username}</h3>
+          )}
+        </div>
+        <div className="buttonContainer">
+          {isEditingUsername ? (
+            <>
+              <Button onClick={handleSaveUsername}>Save</Button>
+              <Button onClick={() => setIsEditingUsername(false)}>
+                Cancel
+              </Button>
+            </>
+          ) : (
             <Button onClick={() => setIsEditingUsername(true)}>
-              Edit Username
+              Change Username
             </Button>
-          </>
-        )}
+          )}
+        </div>
       </div>
 
-      <div className="profileImage">
-        {isEditingProfileImage ? (
-          <div>
-            <input
+      <hr />
+
+      <div className="profileImageContainer fieldContainer">
+        <div className="profileImage">
+          {isEditingProfileImage ? (
+            <InputWithLabel
+              label="Profile Image"
               type="file"
+              name="profileImage"
+              value={null}
               onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  handleProfileImageChange(e.target.files[0]);
+                const target = e.target as HTMLInputElement;
+                if (target.files && target.files[0]) {
+                  handleProfileImageChange(target.files[0]);
                 }
               }}
             />
+          ) : (
+            <img
+              src={tempProfileImage}
+              alt={currentUser?.username || "Profile Image"}
+            />
+          )}
+        </div>
+        <div className="buttonContainer">
+          {isEditingProfileImage ? (
             <Button onClick={() => setIsEditingProfileImage(false)}>
               Cancel
             </Button>
-          </div>
-        ) : (
-          <>
-            <img src={tempProfileImage} alt={currentUser?.username} />
+          ) : (
             <Button onClick={() => setIsEditingProfileImage(true)}>
-              Edit Profile Image
+              Change Profile Image
             </Button>
-          </>
-        )}
+          )}
+        </div>
       </div>
 
-      <div>
-        {isEditingPassword ? (
-          <div>
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <Button onClick={handleSavePassword}>Save</Button>
-            <Button onClick={() => setIsEditingPassword(false)}>Cancel</Button>
-          </div>
-        ) : (
-          <Button onClick={() => setIsEditingPassword(true)}>
-            Edit Password
-          </Button>
-        )}
+      <hr />
+
+      <div className="fieldContainer">
+        <div>
+          {isEditingPassword && (
+            <>
+              <InputWithLabel
+                label="New Password"
+                type="password"
+                name="newPassword"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                onBlur={validatePassword}
+                error={passwordError || ""}
+                placeholder="Enter new password"
+              />
+              <InputWithLabel
+                label="Confirm Password"
+                type="password"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={validateConfirmPassword}
+                error={confirmPasswordError || ""}
+                placeholder="Confirm your new password"
+              />
+            </>
+          )}
+        </div>
+        <div className="buttonContainer">
+          {isEditingPassword ? (
+            <>
+              <Button onClick={handleSavePassword}>Save</Button>
+              <Button onClick={() => setIsEditingPassword(false)}>
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => setIsEditingPassword(true)}>
+              Change Password
+            </Button>
+          )}
+        </div>
       </div>
+      <hr />
     </StyledSection>
   );
 };
