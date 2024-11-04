@@ -17,10 +17,11 @@ const StyledDiv = styled.div`
     object-fit: cover;
     height: 100%;
     width: 100%;
-    box-shadow: 1px 1px 3px ${({ theme }) => theme.accent};
-    transition: background-color 0.3s;
+    box-shadow: 1px 1px 3px ${({ theme }) => theme.active};
+    transition: background-color transform 0.2s;
     &:hover {
       background-color: ${({ theme }) => theme.accent};
+      transform: scale(1.05);
     }
   }
 `;
