@@ -8,9 +8,11 @@ const router = Router();
 // Route for getting chat summaries
 router.get("/summary", authenticateToken, async (req, res) => {
   try {
+    const userId = req.user.userId;
+
     const chatSummaries = await chatsCollection
       .aggregate([
-        { $match: { members: { $in: [req.user.userId] } } },
+        { $match: { members: { $in: [userId] } } },
         {
           $lookup: {
             from: "users",
@@ -37,15 +39,44 @@ router.get("/summary", authenticateToken, async (req, res) => {
           },
         },
         {
+          $lookup: {
+            from: "messages",
+            let: { chatId: "$_id", lastSeen: `$lastSeen.${userId}` },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$chatId", "$$chatId"] },
+                      { $gt: ["$createdAt", "$$lastSeen"] },
+                      { $ne: ["$userId", userId] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "unreadMessages",
+          },
+        },
+        {
+          $addFields: {
+            unreadCount: { $size: "$unreadMessages" },
+          },
+        },
+        {
           $project: {
             _id: 1,
             members: 1,
             memberDetails: { _id: 1, username: 1, profileImage: 1 },
             lastMessage: { _id: 1, content: 1, createdAt: 1 },
+            lastSeen: 1,
+            unreadCount: 1,
           },
         },
       ])
       .toArray();
+
+    console.log(chatSummaries);
 
     res.status(200).json(chatSummaries);
   } catch (err) {
@@ -84,7 +115,6 @@ router.get("/chat/:id", authenticateToken, async (req, res) => {
                 $project: {
                   _id: 1,
                   content: 1,
-                  isRead: 1,
                   userId: 1,
                   createdAt: 1,
                 },
@@ -166,6 +196,80 @@ router.delete("/chat/delete/:id", authenticateToken, async (req, res) => {
   } catch (error) {
     console.error("Error deleting chat:", error);
     res.status(500).json({ error: "Failed to delete chat" });
+  }
+});
+
+// Route to update chat's lastSeen timestamp
+router.patch("/chat/:chatId/lastSeen", authenticateToken, async (req, res) => {
+  const { chatId } = req.params;
+  const userId = req.user.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: "User not authenticated." });
+  }
+
+  try {
+    const timestamp = new Date().toISOString();
+
+    console.log(
+      `Updating lastSeen for userId: ${userId} in chatId: ${chatId} with timestamp: ${timestamp}`
+    );
+
+    const result = await chatsCollection.updateOne(
+      { _id: chatId },
+      { $set: { [`lastSeen.${userId}`]: timestamp } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: "Chat not found." });
+    }
+
+    console.log(`Last seen updated for userId: ${userId} in chatId: ${chatId}`);
+
+    res
+      .status(200)
+      .json({ message: "Last seen timestamp updated successfully." });
+  } catch (error) {
+    console.error("Error updating last seen timestamp:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating last seen timestamp." });
+  }
+});
+
+// Route for unred messages count.
+router.get("/chat/:chatId/unreadCount", async (req, res) => {
+  const { chatId } = req.params;
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required." });
+  }
+
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json({ error: "Chat not found." });
+    }
+
+    const lastSeen = chat.lastSeen[userId];
+    if (!lastSeen) {
+      return res
+        .status(404)
+        .json({ error: "Last seen timestamp not found for this user." });
+    }
+
+    const unreadCount = await Message.countDocuments({
+      chatId,
+      createdAt: { $gt: lastSeen },
+    });
+
+    res.status(200).json({ unreadCount });
+  } catch (error) {
+    console.error("Error fetching unread messages count:", error);
+    res.status(500).json({
+      error: "An error occurred while fetching unread messages count.",
+    });
   }
 });
 
