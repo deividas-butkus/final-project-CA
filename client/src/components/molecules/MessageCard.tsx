@@ -21,7 +21,6 @@ export type MessageCardProps = {
   message: {
     _id: Message["_id"];
     content: Message["content"];
-    isRead: Message["isRead"];
     createdAt: Message["createdAt"];
   };
   isCurrentUser: boolean;
@@ -32,7 +31,6 @@ const MessageCard = ({ message, isCurrentUser }: MessageCardProps) => {
     <StyledArticle $isCurrentUser={isCurrentUser}>
       <div>
         <p>{message.content}</p>
-        {/* <p>{message.isRead ? "Read" : "Unread"}</p> */}
         <p>
           {new Date(message.createdAt).toLocaleString(undefined, {
             month: "short",
