@@ -16,6 +16,7 @@ export const chatsReducer = (state: State, action: Action): State => {
     },
     SET_CHATS_SUMMARY: () => {
       if ("payload" in action) {
+        console.log("Setting chats summary:", action.payload);
         return {
           ...state,
           chats: Array.isArray(action.payload) ? action.payload : [],
@@ -49,8 +50,32 @@ export const chatsReducer = (state: State, action: Action): State => {
         (chat) => chat._id !== (action.payload as { chatId: string }).chatId
       ),
     }),
+    UPDATE_LAST_SEEN: () => {
+      if ("payload" in action) {
+        const { chatId, userId, timestamp } = action.payload as {
+          chatId: Chat["_id"];
+          userId: string;
+          timestamp: string;
+        };
+
+        return {
+          ...state,
+          chats: state.chats.map((chat) =>
+            chat._id === chatId
+              ? {
+                  ...chat,
+                  lastSeen: {
+                    ...(chat.lastSeen || {}),
+                    [userId]: timestamp,
+                  },
+                }
+              : chat
+          ),
+        };
+      }
+      return state;
+    },
   };
 
-  // Default state return if action type does not match any case
   return reducers[action.type] ? reducers[action.type]() : state;
 };
