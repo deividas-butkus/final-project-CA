@@ -23,8 +23,7 @@ router.post("/add", authenticateToken, async (req, res) => {
     chatId,
     userId: senderId,
     content,
-    createdAt: new Date(),
-    isRead: false,
+    createdAt: new Date().toISOString(),
   };
 
   try {

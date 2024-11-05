@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import ChatsCount from "../atoms/ChatsCount";
+
+import { useChatsContext } from "../../contexts/chats/useChatsContext";
+import Counter from "../atoms/Counter";
 
 const StyledNav = styled.nav`
   display: flex;
@@ -36,6 +38,8 @@ const StyledNav = styled.nav`
 `;
 
 const NavBar = () => {
+  const { chats } = useChatsContext();
+
   return (
     <StyledNav>
       <ul>
@@ -63,7 +67,7 @@ const NavBar = () => {
             Chats
           </NavLink>
         </li>
-        <ChatsCount />
+        <Counter count={chats.length} $position="translate(-8px, -8px)" />
       </ul>
     </StyledNav>
   );

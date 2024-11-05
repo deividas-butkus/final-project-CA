@@ -63,8 +63,13 @@ const Spacer = styled.div`
 
 const Chat = () => {
   const { chatId } = useParams<{ chatId: ChatType["_id"] }>();
-  const { selectedChat, fetchChatById, refetchSelectedChat, addMessage } =
-    useChatsContext();
+  const {
+    selectedChat,
+    setLastSeen,
+    fetchChatById,
+    refetchSelectedChat,
+    addMessage,
+  } = useChatsContext();
   const { currentUser } = useUsersContext();
   const [messageInput, setMessageInput] = useState("");
 
@@ -98,6 +103,12 @@ const Chat = () => {
       });
     }
   }, [selectedChat?.messages]);
+
+  useEffect(() => {
+    if (chatId) {
+      setLastSeen(chatId);
+    }
+  }, [chatId, setLastSeen]);
 
   if (!selectedChat || selectedChat._id !== chatId) {
     return <p>Loading chat...</p>;
@@ -160,7 +171,6 @@ const Chat = () => {
               message={{
                 _id: message._id,
                 content: message.content,
-                isRead: message.isRead ?? false,
                 createdAt: message.createdAt || "No timestamp",
               }}
               isCurrentUser={message.userId === currentUser?._id}

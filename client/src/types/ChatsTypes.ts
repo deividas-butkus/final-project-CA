@@ -6,6 +6,7 @@ export type ChatsContextType = {
   dispatch: React.Dispatch<Action>;
   selectedChat: Chat | null;
   fetchChatsSummary: () => Promise<void>;
+  setLastSeen: (chatId: Chat["_id"]) => Promise<void>;
   getOrCreateChat: (members: Chat["members"]) => Promise<Chat | null>;
   fetchChatById: (chatId: Chat["_id"]) => Promise<Chat | null>;
   refetchSelectedChat: (chatId: Chat["_id"]) => Promise<void>;
@@ -24,9 +25,9 @@ export type Chat = {
   messages?: Message[];
   lastMessage: {
     content: Message["content"];
-    isRead: Message["isRead"];
     createdAt: Message["createdAt"];
   };
+  lastSeen?: Record<User["_id"], string>;
   unreadCount: number;
 };
 
@@ -37,4 +38,8 @@ export type Action =
       type: "ADD_MESSAGE";
       payload: { chatId: Chat["_id"]; message: Message };
     }
-  | { type: "DELETE_CHAT"; payload: { chatId: Chat["_id"] } };
+  | { type: "DELETE_CHAT"; payload: { chatId: Chat["_id"] } }
+  | {
+      type: "UPDATE_LAST_SEEN";
+      payload: { chatId: Chat["_id"]; userId: User["_id"]; timestamp: string };
+    };

@@ -13,7 +13,6 @@ export type Message = {
   userId: User["_id"];
   content: string;
   likedUserId: User["_id"];
-  isRead: boolean;
   createdAt: string;
 };
 

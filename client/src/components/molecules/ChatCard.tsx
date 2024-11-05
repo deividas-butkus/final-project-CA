@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useUsersContext } from "../../contexts/users/useUsersContext";
 import { Chat as ChatType } from "../../types/ChatsTypes";
 import Button from "../atoms/Button";
 import { useChatsContext } from "../../contexts/chats/useChatsContext";
+import Counter from "../atoms/Counter";
 
 const StyledDiv = styled.div`
   height: auto;
@@ -33,6 +34,7 @@ const StyledDiv = styled.div`
         h4 {
           margin: 0;
           color: ${({ theme }) => theme.accent};
+          display: flex;
         }
         p {
           margin: 0;
@@ -54,6 +56,7 @@ type Props = {
 const ChatCard = ({ chat }: Props) => {
   const { currentUser } = useUsersContext();
   const { deleteChat } = useChatsContext();
+  const theme = useTheme(); // Access theme here
 
   const isSelfChat = chat.members.length === 1;
   const otherUser = chat.memberDetails?.find(
@@ -87,7 +90,16 @@ const ChatCard = ({ chat }: Props) => {
             )
           )}
           <div>
-            <h4>{chatTitle}</h4>
+            <h4>
+              {chatTitle}
+              {chat.unreadCount > 0 && (
+                <Counter
+                  count={chat.unreadCount}
+                  $bgColor={theme.error}
+                  $position="translate(2px, -9px)"
+                />
+              )}
+            </h4>
             {chat.lastMessage ? (
               <>
                 <p>
