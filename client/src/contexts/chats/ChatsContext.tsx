@@ -5,11 +5,13 @@ import {
   useCallback,
   useMemo,
 } from "react";
+
 import { chatsReducer } from "./chatsReducer";
 import { Chat, ChatsContextType, Action } from "../../types/ChatsTypes";
-import { Message } from "../../types/MessagesTypes";
+import { Message, MessageData } from "../../types/MessagesTypes";
 import { User } from "../../types/UsersTypes";
 import { useUsersContext } from "../users/useUsersContext";
+import socket from "../../utils/socketClient";
 
 type ChatsProviderProps = {
   children: React.ReactNode;
@@ -148,6 +150,24 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     [currentUser, dispatch, refetchSelectedChat]
   );
 
+  useEffect(() => {
+    // Listen for new messages from the server
+    socket.on("messageReceived", (messageData: MessageData) => {
+      dispatch({
+        type: "ADD_MESSAGE",
+        payload: {
+          chatId: messageData.chatId,
+          message: messageData.message,
+        },
+      });
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.off("messageReceived");
+    };
+  }, [dispatch]);
+
   const getOrCreateChat = useCallback(
     async (members: Chat["members"]): Promise<Chat | null> => {
       const existingChat = state.chats.find(
@@ -225,11 +245,12 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
           type: "ADD_MESSAGE",
           payload: { chatId, message: newMessage },
         });
+        socket.emit("newMessage", { chatId, message: newMessage });
       } catch (error) {
         console.error("Error in addMessage:", error);
       }
     },
-    []
+    [dispatch]
   );
 
   const deleteChat = useCallback(async (chatId: Chat["_id"]): Promise<void> => {
