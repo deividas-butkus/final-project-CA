@@ -1,4 +1,4 @@
-import { Message } from "./MessagesTypes";
+import { LikeData, Message } from "./MessagesTypes";
 import { User } from "./UsersTypes";
 
 export type ChatsContextType = {
@@ -42,4 +42,5 @@ export type Action =
   | {
       type: "UPDATE_LAST_SEEN";
       payload: { chatId: Chat["_id"]; userId: User["_id"]; timestamp: string };
-    };
+    }
+  | { type: "UPDATE_LIKE"; payload: LikeData };

@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { Server } from "socket.io";
 
 import { connectToDb } from "./mongoClient.js";
 import usersRouter from "./routes/users.js";
@@ -26,7 +27,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
 
 app.use("/users", usersRouter);
@@ -41,6 +41,33 @@ const startServer = async () => {
 
     const server = app.listen(SERVER_PORT, () => {
       console.log(`Server is up and running on port ${SERVER_PORT}.`);
+    });
+
+    const io = new Server(server, {
+      cors: {
+        origin: `http://localhost:${process.env.CLIENT_PORT}`,
+      },
+    });
+
+    io.on("connection", (socket) => {
+      console.log("A user connected:", socket.id);
+
+      socket.on("newMessage", (messageData) => {
+        io.emit("messageReceived", messageData);
+      });
+
+      socket.on("likeMessage", async ({ messageId, userId }) => {
+        console.log("Like received for message:", messageId);
+
+        io.emit("messageLiked", {
+          messageId,
+          userId,
+        });
+      });
+
+      socket.on("disconnect", () => {
+        console.log("User disconnected:", socket.id);
+      });
     });
 
     const gracefulServerShutdown = async (signal) => {

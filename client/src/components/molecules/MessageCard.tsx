@@ -2,10 +2,12 @@ import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { lighten } from "polished";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+
 import Avatar from "../atoms/Avatar";
 import { useUsersContext } from "../../contexts/users/useUsersContext";
-import { Message } from "../../types/MessagesTypes";
+import { LikeData, Message } from "../../types/MessagesTypes";
 import { User as UserType } from "../../types/UsersTypes";
+import socket from "../../utils/socketClient";
 
 const StyledArticle = styled.article<{ $isCurrentUser: boolean }>`
   position: relative;
@@ -151,16 +153,28 @@ const MessageCard = ({
   const handleLikeClick = async () => {
     if (isCurrentUser) return;
 
-    setIsLiked((prev) => !prev);
-
     try {
       await onToggleLike(messageId);
-      await fetchMessage();
+      socket.emit("likeMessage", { messageId, userId: currentUser?._id });
     } catch (error) {
       console.error("Error toggling like status:", error);
-      setIsLiked((prev) => !prev);
     }
   };
+
+  // Listen for "messageLiked" event from server
+  useEffect(() => {
+    const handleSocketLike = (likeData: LikeData) => {
+      if (likeData.messageId === messageId) {
+        setIsLiked((prev) => !prev);
+      }
+    };
+
+    socket.on("messageLiked", handleSocketLike);
+
+    return () => {
+      socket.off("messageLiked", handleSocketLike);
+    };
+  }, [messageId]);
 
   if (!message) return null;
 

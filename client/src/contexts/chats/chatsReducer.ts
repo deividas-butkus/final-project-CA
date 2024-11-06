@@ -1,5 +1,6 @@
 import { Action, Chat } from "../../types/ChatsTypes";
 import { Message } from "../../types/MessagesTypes";
+import { User } from "../../types/UsersTypes";
 
 type State = {
   chats: Chat[];
@@ -70,6 +71,30 @@ export const chatsReducer = (state: State, action: Action): State => {
                 }
               : chat
           ),
+        };
+      }
+      return state;
+    },
+    UPDATE_LIKE: () => {
+      if ("payload" in action) {
+        const { messageId, userId } = action.payload as {
+          messageId: Message["_id"];
+          userId: User["_id"];
+        };
+
+        return {
+          ...state,
+          chats: state.chats.map((chat) => ({
+            ...chat,
+            messages: chat.messages?.map((message) =>
+              message._id === messageId
+                ? {
+                    ...message,
+                    likedUserId: message.likedUserId === userId ? "" : userId,
+                  }
+                : message
+            ),
+          })),
         };
       }
       return state;

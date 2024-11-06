@@ -17,3 +17,13 @@ export type Message = {
 };
 
 export type Action = { type: "SET_MESSAGES"; payload: Message[] };
+
+export type MessageData = {
+  chatId: Chat["_id"];
+  message: Message;
+};
+
+export type LikeData = {
+  messageId: Message["_id"];
+  userId: User["_id"];
+};

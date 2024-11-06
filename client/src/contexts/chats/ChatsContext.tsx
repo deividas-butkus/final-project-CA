@@ -5,11 +5,13 @@ import {
   useCallback,
   useMemo,
 } from "react";
+
 import { chatsReducer } from "./chatsReducer";
 import { Chat, ChatsContextType, Action } from "../../types/ChatsTypes";
-import { Message } from "../../types/MessagesTypes";
+import { LikeData, Message, MessageData } from "../../types/MessagesTypes";
 import { User } from "../../types/UsersTypes";
 import { useUsersContext } from "../users/useUsersContext";
+import socket from "../../utils/socketClient";
 
 type ChatsProviderProps = {
   children: React.ReactNode;
@@ -148,6 +150,46 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     [currentUser, dispatch, refetchSelectedChat]
   );
 
+  useEffect(() => {
+    socket.on("messageReceived", (messageData: MessageData) => {
+      if (
+        !state.chats.some(
+          (chat) =>
+            chat._id === messageData.chatId &&
+            chat.messages?.find((msg) => msg._id === messageData.message._id)
+        )
+      ) {
+        dispatch({
+          type: "ADD_MESSAGE",
+          payload: {
+            chatId: messageData.chatId,
+            message: messageData.message,
+          },
+        });
+      }
+    });
+
+    return () => {
+      socket.off("messageReceived");
+    };
+  }, [dispatch, state.chats]);
+
+  useEffect(() => {
+    socket.on("messageLiked", (likeData: LikeData) => {
+      dispatch({
+        type: "UPDATE_LIKE",
+        payload: {
+          messageId: likeData.messageId,
+          userId: likeData.userId,
+        },
+      });
+    });
+
+    return () => {
+      socket.off("messageLiked");
+    };
+  }, [dispatch]);
+
   const getOrCreateChat = useCallback(
     async (members: Chat["members"]): Promise<Chat | null> => {
       const existingChat = state.chats.find(
@@ -202,7 +244,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
       chatId: Chat["_id"],
       content: Message["content"],
       userId: User["_id"]
-    ): Promise<void> => {
+    ) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
@@ -220,11 +262,8 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
           throw new Error("Failed to add message");
         }
 
-        const newMessage: Message = await response.json();
-        dispatch({
-          type: "ADD_MESSAGE",
-          payload: { chatId, message: newMessage },
-        });
+        const newMessage = await response.json();
+        socket.emit("newMessage", { chatId, message: newMessage });
       } catch (error) {
         console.error("Error in addMessage:", error);
       }
