@@ -1,7 +1,7 @@
 import styled from "styled-components";
-
 import { useUsersContext } from "../../contexts/users/useUsersContext";
 import { DEFAULT_USER_IMAGE, USER_IMAGE_ALT } from "../../config/constants";
+import { User } from "../../types/UsersTypes";
 
 const StyledDiv = styled.div`
   height: 30px;
@@ -26,14 +26,25 @@ const StyledDiv = styled.div`
   }
 `;
 
-const Avatar = () => {
+type UserTypeForAvatar = {
+  profileImage?: User["profileImage"];
+  username?: User["username"];
+};
+
+type AvatarProps = {
+  user?: UserTypeForAvatar;
+};
+
+const Avatar = ({ user }: AvatarProps) => {
   const { currentUser } = useUsersContext();
+  const displayUser = user ||
+    currentUser || { profileImage: DEFAULT_USER_IMAGE, username: "User" };
 
   return (
     <StyledDiv>
       <img
-        src={currentUser?.profileImage || DEFAULT_USER_IMAGE}
-        alt={currentUser?.username || USER_IMAGE_ALT}
+        src={displayUser.profileImage || DEFAULT_USER_IMAGE}
+        alt={displayUser.username || USER_IMAGE_ALT}
       />
     </StyledDiv>
   );
