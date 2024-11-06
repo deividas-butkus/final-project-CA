@@ -36,4 +36,47 @@ router.post("/add", authenticateToken, async (req, res) => {
   }
 });
 
+// Route for setting liked message
+router.patch(
+  "/message/toggle-like/:messageId",
+  authenticateToken,
+  async (req, res) => {
+    const { messageId } = req.params;
+    const userId = req.user.userId;
+
+    try {
+      const message = await messagesCollection.findOne({ _id: messageId });
+
+      if (!message) {
+        return res.status(404).json({ error: "Message not found." });
+      }
+
+      if (message.userId === userId) {
+        return res
+          .status(403)
+          .json({ error: "Cannot like/unlike your own message." });
+      }
+
+      const updatedMessage = await messagesCollection.updateOne(
+        { _id: messageId },
+        {
+          $set: { likedUserId: message.likedUserId === userId ? null : userId },
+        }
+      );
+
+      res.status(200).json({
+        message:
+          message.likedUserId === userId
+            ? "Message unliked successfully."
+            : "Message liked successfully.",
+      });
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while toggling the like." });
+    }
+  }
+);
+
 export default router;
