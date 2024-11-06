@@ -43,19 +43,26 @@ const startServer = async () => {
       console.log(`Server is up and running on port ${SERVER_PORT}.`);
     });
 
-    // Initialize Socket.IO with the server
     const io = new Server(server, {
       cors: {
         origin: `http://localhost:${process.env.CLIENT_PORT}`,
       },
     });
 
-    // Setup Socket.IO event listeners
     io.on("connection", (socket) => {
       console.log("A user connected:", socket.id);
 
       socket.on("newMessage", (messageData) => {
         io.emit("messageReceived", messageData);
+      });
+
+      socket.on("likeMessage", async ({ messageId, userId }) => {
+        console.log("Like received for message:", messageId);
+
+        io.emit("messageLiked", {
+          messageId,
+          userId,
+        });
       });
 
       socket.on("disconnect", () => {
