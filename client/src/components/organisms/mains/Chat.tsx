@@ -8,6 +8,7 @@ import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import MessageCard from "../../molecules/MessageCard";
 import { Chat as ChatType } from "../../../types/ChatsTypes";
 import InputWithLabel from "../../molecules/InputWithLabel";
+import { Message } from "../../../types/MessagesTypes";
 
 const StyledSection = styled.section`
   > div.chatHeader {
@@ -19,6 +20,8 @@ const StyledSection = styled.section`
       width: 50px;
       height: 50px;
       border-radius: 7px;
+      object-fit: cover;
+      object-position: center;
     }
   }
   > div.messages {
@@ -74,6 +77,8 @@ const Chat = () => {
   const [messageInput, setMessageInput] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const token = localStorage.getItem("token") || "";
 
   const stableFetchChatById = useCallback(() => {
     if (
@@ -144,6 +149,24 @@ const Chat = () => {
     }
   };
 
+  const handleToggleLike = async (messageId: Message["_id"]) => {
+    try {
+      await fetch(`/api/messages/message/toggle-like/${messageId}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      refetchMessages();
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+    }
+  };
+
+  const refetchMessages = async () => {
+    await fetchChatById(chatId);
+  };
+
   return (
     <StyledSection>
       <div className="chatHeader">
@@ -165,17 +188,24 @@ const Chat = () => {
 
       <div className="messages">
         {selectedChat.messages && selectedChat.messages.length > 0 ? (
-          selectedChat.messages.map((message) => (
-            <MessageCard
-              key={message._id}
-              message={{
-                _id: message._id,
-                content: message.content,
-                createdAt: message.createdAt || "No timestamp",
-              }}
-              isCurrentUser={message.userId === currentUser?._id}
-            />
-          ))
+          selectedChat.messages.map((message) => {
+            const isLiked = message.likedUserId === currentUser?._id;
+
+            return (
+              <MessageCard
+                key={message._id}
+                message={{
+                  _id: message._id,
+                  content: message.content,
+                  createdAt: message.createdAt || "No timestamp",
+                  likedUserId: message.likedUserId,
+                }}
+                isCurrentUser={message.userId === currentUser?._id}
+                onToggleLike={handleToggleLike}
+                $isLiked={isLiked}
+              />
+            );
+          })
         ) : (
           <p>No messages yet</p>
         )}
