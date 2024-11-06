@@ -150,6 +150,17 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
 
   const getOrCreateChat = useCallback(
     async (members: Chat["members"]): Promise<Chat | null> => {
+      const existingChat = state.chats.find(
+        (chat) =>
+          chat.members.length === members.length &&
+          members.every((member) => chat.members.includes(member))
+      );
+
+      if (existingChat) {
+        dispatch({ type: "SET_SELECTED_CHAT", payload: existingChat });
+        return existingChat;
+      }
+
       const token = localStorage.getItem("token");
       if (!token) return null;
 
@@ -165,11 +176,14 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
 
         if (response.ok) {
           const data: Chat = await response.json();
+
+          if (!state.chats.some((chat) => chat._id === data._id)) {
+            dispatch({
+              type: "SET_CHATS_SUMMARY",
+              payload: [...state.chats, data],
+            });
+          }
           dispatch({ type: "SET_SELECTED_CHAT", payload: data });
-          dispatch({
-            type: "SET_CHATS_SUMMARY",
-            payload: [...state.chats, data],
-          });
           return data;
         } else {
           console.error("Failed to fetch or create chat:", response.statusText);
