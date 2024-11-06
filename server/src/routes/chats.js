@@ -76,8 +76,6 @@ router.get("/summary", authenticateToken, async (req, res) => {
       ])
       .toArray();
 
-    console.log(chatSummaries);
-
     res.status(200).json(chatSummaries);
   } catch (err) {
     console.error("Error fetching chat summaries:", err);
@@ -219,8 +217,6 @@ router.patch("/chat/:chatId/lastSeen", authenticateToken, async (req, res) => {
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: "Chat not found." });
     }
-
-    console.log(`Last seen updated for userId: ${userId} in chatId: ${chatId}`);
 
     res
       .status(200)
