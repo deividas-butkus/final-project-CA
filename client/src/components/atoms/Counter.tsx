@@ -4,6 +4,7 @@ type Props = {
   count: number;
   $bgColor?: string;
   $position?: string;
+  className?: string; // Allow className prop
 };
 
 const StyledDiv = styled.div<Omit<Props, "count">>`
@@ -18,11 +19,15 @@ const StyledDiv = styled.div<Omit<Props, "count">>`
   transform: ${({ $position }) => $position || "translate(0, 0)"};
 `;
 
-const Counter = ({ count, $bgColor, $position }: Props) => {
+const Counter = ({ count, $bgColor, $position, className }: Props) => {
   const theme = useTheme() as DefaultTheme;
 
   return (
-    <StyledDiv $bgColor={$bgColor || theme.buttonBg} $position={$position}>
+    <StyledDiv
+      className={className} // Pass className here
+      $bgColor={$bgColor || theme.buttonBg}
+      $position={$position}
+    >
       {count}
     </StyledDiv>
   );
