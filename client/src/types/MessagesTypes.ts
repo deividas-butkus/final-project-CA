@@ -17,3 +17,8 @@ export type Message = {
 };
 
 export type Action = { type: "SET_MESSAGES"; payload: Message[] };
+
+export type MessageData = {
+  chatId: Chat["_id"];
+  message: Message;
+};
