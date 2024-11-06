@@ -118,7 +118,6 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
       });
       if (response.ok) {
         const data: Chat[] = await response.json();
-        console.log("Fetched chat data:", data);
 
         dispatch({ type: "SET_CHATS_SUMMARY", payload: data });
       } else {
@@ -129,9 +128,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log("Chats in context after update:", state.chats);
-  }, [state.chats]);
+  useEffect(() => {}, [state.chats]);
 
   const debouncedFetchChatsSummary = useMemo(
     () => debounce(fetchChatsSummary, 500),

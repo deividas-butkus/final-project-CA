@@ -11,6 +11,7 @@ const StyledDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   > a {
     > div {
       display: flex;
@@ -26,20 +27,35 @@ const StyledDiv = styled.div`
         object-fit: cover;
         border-radius: 7px;
       }
+
       > div {
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 10px;
-        h4 {
-          margin: 0;
-          color: ${({ theme }) => theme.accent};
+
+        .title-container {
           display: flex;
+          align-items: center;
+          position: relative;
+
+          h4 {
+            margin: 0;
+            color: ${({ theme }) => theme.accent};
+          }
+
+          .counter {
+            position: absolute;
+            top: -7px;
+            right: -17px;
+          }
         }
+
         p {
           margin: 0;
           color: #fff;
         }
+
         > p.timestamp {
           font-size: small;
           font-weight: 100;
@@ -56,7 +72,7 @@ type Props = {
 const ChatCard = ({ chat }: Props) => {
   const { currentUser } = useUsersContext();
   const { deleteChat } = useChatsContext();
-  const theme = useTheme(); // Access theme here
+  const theme = useTheme();
 
   const isSelfChat = chat.members.length === 1;
   const otherUser = chat.memberDetails?.find(
@@ -90,16 +106,16 @@ const ChatCard = ({ chat }: Props) => {
             )
           )}
           <div>
-            <h4>
-              {chatTitle}
+            <div className="title-container">
+              <h4>{chatTitle}</h4>
               {chat.unreadCount > 0 && (
                 <Counter
+                  className="counter"
                   count={chat.unreadCount}
                   $bgColor={theme.error}
-                  $position="translate(2px, -9px)"
                 />
               )}
-            </h4>
+            </div>
             {chat.lastMessage ? (
               <>
                 <p>

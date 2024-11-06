@@ -16,7 +16,6 @@ export const chatsReducer = (state: State, action: Action): State => {
     },
     SET_CHATS_SUMMARY: () => {
       if ("payload" in action) {
-        console.log("Setting chats summary:", action.payload);
         return {
           ...state,
           chats: Array.isArray(action.payload) ? action.payload : [],
