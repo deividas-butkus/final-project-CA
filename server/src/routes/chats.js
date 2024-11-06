@@ -211,10 +211,6 @@ router.patch("/chat/:chatId/lastSeen", authenticateToken, async (req, res) => {
   try {
     const timestamp = new Date().toISOString();
 
-    console.log(
-      `Updating lastSeen for userId: ${userId} in chatId: ${chatId} with timestamp: ${timestamp}`
-    );
-
     const result = await chatsCollection.updateOne(
       { _id: chatId },
       { $set: { [`lastSeen.${userId}`]: timestamp } }
