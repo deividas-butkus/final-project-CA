@@ -14,7 +14,7 @@ const GlobalStyles = createGlobalStyle`
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  h2, h3, h4 {
+  h2, h3, h4, p {
     font-weight: 300;
   }
 

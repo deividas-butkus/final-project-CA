@@ -27,8 +27,8 @@ const StyledSection = styled.section`
   > div.messages {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    background-color: #135244;
+    gap: 25px;
+    background-color: ${({ theme }) => theme.accent};
     padding: 30px;
     border-radius: 15px;
     align-items: flex-start;
@@ -188,24 +188,14 @@ const Chat = () => {
 
       <div className="messages">
         {selectedChat.messages && selectedChat.messages.length > 0 ? (
-          selectedChat.messages.map((message) => {
-            const isLiked = message.likedUserId === currentUser?._id;
-
-            return (
-              <MessageCard
-                key={message._id}
-                message={{
-                  _id: message._id,
-                  content: message.content,
-                  createdAt: message.createdAt || "No timestamp",
-                  likedUserId: message.likedUserId,
-                }}
-                isCurrentUser={message.userId === currentUser?._id}
-                onToggleLike={handleToggleLike}
-                $isLiked={isLiked}
-              />
-            );
-          })
+          selectedChat.messages.map((message) => (
+            <MessageCard
+              key={message._id}
+              messageId={message._id}
+              isCurrentUser={message.userId === currentUser?._id}
+              onToggleLike={handleToggleLike}
+            />
+          ))
         ) : (
           <p>No messages yet</p>
         )}

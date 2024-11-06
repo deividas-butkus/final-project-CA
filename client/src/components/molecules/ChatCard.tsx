@@ -5,6 +5,7 @@ import { Chat as ChatType } from "../../types/ChatsTypes";
 import Button from "../atoms/Button";
 import { useChatsContext } from "../../contexts/chats/useChatsContext";
 import Counter from "../atoms/Counter";
+import { Message } from "../../types/MessagesTypes";
 
 const StyledDiv = styled.div`
   height: auto;
@@ -65,6 +66,12 @@ const StyledDiv = styled.div`
   }
 `;
 
+const MAX_MESSAGE_LENGTH = 50;
+
+const truncateText = (text: Message["content"], maxLength: number) => {
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
+
 type Props = {
   chat: ChatType;
 };
@@ -119,7 +126,8 @@ const ChatCard = ({ chat }: Props) => {
             {chat.lastMessage ? (
               <>
                 <p>
-                  {chat.lastMessage.content || "No message content available"}
+                  {truncateText(chat.lastMessage.content, MAX_MESSAGE_LENGTH) ||
+                    "No message content available"}
                 </p>
                 <p className="timestamp">
                   {chat.lastMessage.createdAt
