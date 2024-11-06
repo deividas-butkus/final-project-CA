@@ -53,18 +53,31 @@ const StyledImageAndNameAndTimestampDiv = styled.div<{
   }
 `;
 
-const StyledLikeIcon = styled(ThumbUpIcon)<{ $isLiked: boolean }>`
+const StyledLikeIcon = styled(ThumbUpIcon)<{
+  $isLiked: boolean;
+  $isCurrentUser: boolean;
+}>`
   position: absolute;
   bottom: 0;
   right: 0;
   padding: 7px;
-  color: ${(props) => (props.$isLiked ? props.theme.active : "grey")};
-  cursor: pointer;
+  color: ${(props) =>
+    props.$isLiked
+      ? props.$isCurrentUser
+        ? props.theme.accent
+        : props.theme.active
+      : "grey"};
+  cursor: ${(props) => (props.$isCurrentUser ? "default" : "pointer")};
   transition: color 0.3s;
 
   &:hover {
     color: ${(props) =>
-      props.$isLiked ? props.theme.activeHover : "lightgrey"};
+      props.$isLiked
+        ? props.$isCurrentUser
+          ? props.theme.accent
+          : props.theme.activeHover
+        : "lightgrey"};
+    cursor: ${(props) => (props.$isCurrentUser ? "default" : "pointer")};
   }
 `;
 
@@ -105,7 +118,10 @@ const MessageCard = ({
 
       if (response.ok) {
         setMessage(fetchedMessage);
-        setIsLiked(fetchedMessage.likedUserId === currentUser?._id);
+        setIsLiked(
+          fetchedMessage.likedUserId === currentUser?._id ||
+            !!fetchedMessage.likedUserId
+        );
       } else {
         console.error(
           "Failed to fetch message:",
@@ -133,12 +149,12 @@ const MessageCard = ({
   }, [fetchMessageUser]);
 
   const handleLikeClick = async () => {
+    if (isCurrentUser) return;
+
     setIsLiked((prev) => !prev);
 
     try {
-      // Await ensures completion before the next render to maintain state consistency
       await onToggleLike(messageId);
-
       await fetchMessage();
     } catch (error) {
       console.error("Error toggling like status:", error);
@@ -180,8 +196,13 @@ const MessageCard = ({
           </div>
         </StyledImageAndNameAndTimestampDiv>
         <p className="content">{message.content}</p>
-        {(isHovered || isLiked) && (
-          <StyledLikeIcon $isLiked={isLiked} onClick={handleLikeClick} />
+
+        {(isLiked || (!isCurrentUser && isHovered)) && (
+          <StyledLikeIcon
+            $isLiked={isLiked}
+            $isCurrentUser={isCurrentUser}
+            onClick={!isCurrentUser ? handleLikeClick : undefined}
+          />
         )}
       </div>
     </StyledArticle>
