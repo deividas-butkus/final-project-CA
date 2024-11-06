@@ -36,6 +36,24 @@ router.post("/add", authenticateToken, async (req, res) => {
   }
 });
 
+// Route to get a specific message by its ID
+router.get("/message/:messageId", authenticateToken, async (req, res) => {
+  const { messageId } = req.params;
+
+  try {
+    const message = await messagesCollection.findOne({ _id: messageId });
+
+    if (!message) {
+      return res.status(404).json({ error: "Message not found." });
+    }
+
+    res.status(200).json(message);
+  } catch (error) {
+    console.error("Error fetching message:", error);
+    res.status(500).json({ error: "Failed to retrieve message." });
+  }
+});
+
 // Route for setting liked message
 router.patch(
   "/message/toggle-like/:messageId",
