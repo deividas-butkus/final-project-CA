@@ -13,9 +13,12 @@ const StyledNav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
+
     > li {
+      position: relative;
       list-style-type: none;
+
       a {
         font-weight: 300;
         color: inherit;
@@ -23,9 +26,11 @@ const StyledNav = styled.nav`
         display: inline-block;
         color: ${({ theme }) => theme.accent};
         transition: transform 0.2s ease;
+
         &:hover {
           transform: scale(1.05);
         }
+
         &.active {
           color: ${({ theme }) => theme.active};
           &:hover {
@@ -35,6 +40,12 @@ const StyledNav = styled.nav`
       }
     }
   }
+`;
+
+const CounterWrapper = styled.div`
+  position: absolute;
+  top: -7px;
+  right: -17px;
 `;
 
 const NavBar = () => {
@@ -66,8 +77,12 @@ const NavBar = () => {
           >
             Chats
           </NavLink>
+          {chats.length > 0 && (
+            <CounterWrapper>
+              <Counter count={chats.length} />
+            </CounterWrapper>
+          )}
         </li>
-        <Counter count={chats.length} $position="translate(-8px, -8px)" />
       </ul>
     </StyledNav>
   );
