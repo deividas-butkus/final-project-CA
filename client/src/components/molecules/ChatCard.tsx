@@ -57,6 +57,7 @@ const StyledDiv = styled.div`
 
         p {
           margin: 0;
+          color: ${({ theme }) => theme.text};
         }
 
         > p.timestamp {
@@ -98,7 +99,7 @@ const ChatCard = ({ chat }: Props) => {
     : `Chat with ${otherUser?.username || "Unknown User"}`;
 
   const handleDeleteClick = () => {
-    setShowDialog(true); // Show dialog on delete button click
+    setShowDialog(true);
   };
 
   const handleConfirmDelete = () => {
