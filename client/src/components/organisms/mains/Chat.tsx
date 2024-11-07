@@ -28,7 +28,7 @@ const StyledSection = styled.section`
     display: flex;
     flex-direction: column;
     gap: 25px;
-    background-color: ${({ theme }) => theme.accent};
+    background-color: #697b81;
     padding: 30px;
     border-radius: 15px;
     align-items: flex-start;
