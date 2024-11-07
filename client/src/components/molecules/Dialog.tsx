@@ -77,10 +77,19 @@ const Dialog = ({
         <Message>{message}</Message>
         {note && <Note>{note}</Note>}
         <ButtonContainer>
-          <Button $bgColor={theme.error} className="delete" onClick={onConfirm}>
+          <Button
+            $bgColor={theme.error}
+            $color="white"
+            className="#fff"
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </Button>
-          {onCancel && <Button onClick={onCancel}>{cancelLabel}</Button>}
+          {onCancel && (
+            <Button $bgColor="#5f5e5e" $color="#fff" onClick={onCancel}>
+              {cancelLabel}
+            </Button>
+          )}
         </ButtonContainer>
       </DialogBox>
     </Overlay>

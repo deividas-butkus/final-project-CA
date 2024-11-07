@@ -57,7 +57,6 @@ const StyledDiv = styled.div`
 
         p {
           margin: 0;
-          color: ${({ theme }) => theme.text};
         }
 
         > p.timestamp {
