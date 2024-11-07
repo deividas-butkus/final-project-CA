@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
@@ -16,6 +16,16 @@ const StyledSection = styled.section`
     display: flex;
     flex-direction: column;
     gap: 30px;
+    > p {
+      transition: transform 0.2s ease;
+      > a {
+        display: inline-block;
+        color: ${({ theme }) => theme.accent};
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
   }
 `;
 
@@ -89,6 +99,9 @@ const Login = () => {
         <Button type="submit" $width="fit-content">
           Login
         </Button>
+        <p>
+          Don’t have an account? <Link to="/register">Register here</Link>
+        </p>
       </form>
 
       {loginError && <p style={{ color: "red" }}>{loginError}</p>}
