@@ -7,6 +7,11 @@ const StyledParagraph = styled.p`
   font-size: 0.8rem;
   text-align: end;
   color: ${({ theme }) => theme.text};
+  @media (min-width: 950px) {
+    & {
+      padding: 7px 20%;
+    }
+  }
 `;
 
 type TokenExpirationTimerProps = {
