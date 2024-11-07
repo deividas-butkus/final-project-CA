@@ -18,12 +18,12 @@ const Contacts = () => {
     fetchUsers();
   }, [fetchUsers]);
 
+  // Filter out the current user
   const otherUsers = users.filter((user) => user._id !== currentUser?._id);
 
   return (
     <StyledSection>
       <h2>Contacts</h2>
-      {currentUser && <ContactCard key={currentUser._id} user={currentUser} />}
       {otherUsers.map((user) => (
         <ContactCard key={user._id} user={user} />
       ))}
