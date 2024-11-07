@@ -5,7 +5,7 @@ const useExpirationTimer = (expirationTime: number | null) => {
     if (expirationTime === null) return; // Handle the null case
 
     const timeUntilExpiration = expirationTime - Date.now();
-    const warningTime = timeUntilExpiration - 10 * 1000;
+    const warningTime = timeUntilExpiration - 10 * 60 * 1000;
 
     if (warningTime > 0) {
       const timer = setTimeout(() => {}, warningTime);
