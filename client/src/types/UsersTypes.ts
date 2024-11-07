@@ -10,6 +10,7 @@ export type UsersContextType = {
   updateProfileImage: (file: File | null) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
   logout: () => void;
+  tokenExpiration: number | null;
 };
 
 export type User = {
@@ -36,3 +37,8 @@ export type Action =
   | { type: "UPDATE_PASSWORD" }
   | { type: "LOGOUT" }
   | { type: "CLEAR_USERS" };
+
+export type DecodedToken = {
+  userId: User["_id"];
+  exp: number;
+};
