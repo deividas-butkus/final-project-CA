@@ -1,4 +1,14 @@
+import styled from "styled-components";
+
 import useCountdown from "../../hooks/useCountdown";
+
+const StyledParagraph = styled.p`
+  margin: 0%;
+  padding: 7px 10%;
+  font-size: 0.8rem;
+  text-align: end;
+  color: ${({ theme }) => theme.text};
+`;
 
 type TokenExpirationTimerProps = {
   token: number | null;
@@ -15,9 +25,9 @@ const TokenExpirationTimer = ({ token }: TokenExpirationTimerProps) => {
 
   return (
     <div>
-      <p>
+      <StyledParagraph>
         Session expires in: {minutes}m {seconds}s
-      </p>
+      </StyledParagraph>
     </div>
   );
 };
