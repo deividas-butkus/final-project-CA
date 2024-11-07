@@ -58,7 +58,7 @@ const Login = () => {
       setLoginSuccess("Login successful!");
       fetchChatsSummary();
       setTimeout(() => {
-        navigate("/chats");
+        navigate("/user");
       }, 3000);
     } catch (err) {
       console.error("Failed to login:", err);
