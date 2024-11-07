@@ -6,6 +6,7 @@ import ChatCard from "../../molecules/ChatCard";
 
 const StyledSection = styled.section`
   margin-bottom: 50px;
+
   > div {
     display: flex;
     flex-direction: column;
@@ -24,9 +25,13 @@ const Chats = () => {
     <StyledSection>
       <h2>Chats</h2>
       <div>
-        {chats.map((chat) => (
-          <ChatCard key={chat._id} chat={chat} />
-        ))}
+        {chats.length > 0 ? (
+          chats.map((chat) => <ChatCard key={chat._id} chat={chat} />)
+        ) : (
+          <p>
+            No chats yet. Choose a contact for a conversation to see it here!
+          </p>
+        )}
       </div>
     </StyledSection>
   );
