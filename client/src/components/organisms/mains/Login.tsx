@@ -62,7 +62,7 @@ const Login = () => {
       }, 3000);
     } catch (err) {
       console.error("Failed to login:", err);
-      setLoginError("An error occurred during login.");
+      setLoginError("Wrong username or password.");
     }
   };
 
