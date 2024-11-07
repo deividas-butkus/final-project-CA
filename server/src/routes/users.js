@@ -233,6 +233,46 @@ router.patch(
   }
 );
 
+// Route to reset profile image to the default
+router.patch("/resetProfileImage", authenticateToken, async (req, res) => {
+  const userId = req.user.userId;
+
+  try {
+    const user = await usersCollection.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const oldProfileImage = user.profileImage;
+
+    await usersCollection.updateOne(
+      { _id: userId },
+      { $set: { profileImage: defaultImagePath } }
+    );
+
+    if (oldProfileImage && oldProfileImage !== defaultImagePath) {
+      const oldImagePath = path.join(__dirname, "..", oldProfileImage);
+
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlink(oldImagePath, (err) => {
+          if (err) {
+            console.error("Failed to delete old profile image:", err);
+          } else {
+            console.log("Old profile image deleted successfully");
+          }
+        });
+      }
+    }
+
+    res.status(200).json({ message: "Profile image reset to default" });
+  } catch (err) {
+    console.error("Failed to reset profile image:", err);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
 // Route to update password
 router.patch("/updatePassword", authenticateToken, async (req, res) => {
   const { password } = req.body;
