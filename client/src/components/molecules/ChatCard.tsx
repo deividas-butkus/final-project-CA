@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
+
 import { useUsersContext } from "../../contexts/users/useUsersContext";
 import { Chat as ChatType } from "../../types/ChatsTypes";
 import Button from "../atoms/Button";
 import { useChatsContext } from "../../contexts/chats/useChatsContext";
 import Counter from "../atoms/Counter";
 import { Message } from "../../types/MessagesTypes";
+import Dialog from "./Dialog";
 
 const StyledDiv = styled.div`
   height: auto;
@@ -54,7 +57,6 @@ const StyledDiv = styled.div`
 
         p {
           margin: 0;
-          color: #fff;
         }
 
         > p.timestamp {
@@ -62,6 +64,11 @@ const StyledDiv = styled.div`
           font-weight: 100;
         }
       }
+    }
+  }
+  > button {
+    &:hover {
+      color: #fff;
     }
   }
 `;
@@ -80,6 +87,7 @@ const ChatCard = ({ chat }: Props) => {
   const { currentUser } = useUsersContext();
   const { deleteChat } = useChatsContext();
   const theme = useTheme();
+  const [showDialog, setShowDialog] = useState(false);
 
   const isSelfChat = chat.members.length === 1;
   const otherUser = chat.memberDetails?.find(
@@ -89,70 +97,99 @@ const ChatCard = ({ chat }: Props) => {
     ? "Store something for myself"
     : `Chat with ${otherUser?.username || "Unknown User"}`;
 
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
+    setShowDialog(true); // Show dialog on delete button click
+  };
+
+  const handleConfirmDelete = () => {
     deleteChat(chat._id);
+    setShowDialog(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDialog(false);
   };
 
   return (
-    <StyledDiv>
-      <Link to={`/chats/chat/${chat._id}`}>
-        <div>
-          {isSelfChat ? (
-            <img
-              src={
-                currentUser?.profileImage || "/uploads/defaultProfileImage.png"
-              }
-              alt={`${currentUser?.username}'s avatar`}
-            />
-          ) : (
-            otherUser?.profileImage && (
-              <img
-                src={otherUser.profileImage}
-                alt={`${otherUser.username}'s avatar`}
-              />
-            )
-          )}
+    <>
+      <StyledDiv>
+        <Link to={`/chats/chat/${chat._id}`}>
           <div>
-            <div className="title-container">
-              <h4>{chatTitle}</h4>
-              {chat.unreadCount > 0 && (
-                <Counter
-                  className="counter"
-                  count={chat.unreadCount}
-                  $bgColor={theme.error}
+            {isSelfChat ? (
+              <img
+                src={
+                  currentUser?.profileImage ||
+                  "/uploads/defaultProfileImage.png"
+                }
+                alt={`${currentUser?.username}'s avatar`}
+              />
+            ) : (
+              otherUser?.profileImage && (
+                <img
+                  src={otherUser.profileImage}
+                  alt={`${otherUser.username}'s avatar`}
                 />
+              )
+            )}
+            <div>
+              <div className="title-container">
+                <h4>{chatTitle}</h4>
+                {chat.unreadCount > 0 && (
+                  <Counter
+                    className="counter"
+                    count={chat.unreadCount}
+                    $bgColor={theme.error}
+                  />
+                )}
+              </div>
+              {chat.lastMessage ? (
+                <>
+                  <p>
+                    {truncateText(
+                      chat.lastMessage.content,
+                      MAX_MESSAGE_LENGTH
+                    ) || "No message content available"}
+                  </p>
+                  <p className="timestamp">
+                    {chat.lastMessage.createdAt
+                      ? new Date(chat.lastMessage.createdAt).toLocaleString(
+                          undefined,
+                          {
+                            month: "short",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                          }
+                        )
+                      : "No timestamp available"}
+                  </p>
+                </>
+              ) : (
+                <p>No messages yet</p>
               )}
             </div>
-            {chat.lastMessage ? (
-              <>
-                <p>
-                  {truncateText(chat.lastMessage.content, MAX_MESSAGE_LENGTH) ||
-                    "No message content available"}
-                </p>
-                <p className="timestamp">
-                  {chat.lastMessage.createdAt
-                    ? new Date(chat.lastMessage.createdAt).toLocaleString(
-                        undefined,
-                        {
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "numeric",
-                        }
-                      )
-                    : "No timestamp available"}
-                </p>
-              </>
-            ) : (
-              <p>No messages yet</p>
-            )}
           </div>
-        </div>
-      </Link>
-      <Button className="delete" onClick={handleDelete}>
-        Delete Chat
-      </Button>
-    </StyledDiv>
+        </Link>
+        <Button className="delete" onClick={handleDeleteClick}>
+          Delete Chat
+        </Button>
+      </StyledDiv>
+
+      <Dialog
+        title="Confirm Deletion"
+        message={
+          <>
+            Are you sure you want to delete <strong>{chatTitle}</strong>?
+          </>
+        }
+        note="This action is irreversible."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        visible={showDialog}
+      />
+    </>
   );
 };
 
