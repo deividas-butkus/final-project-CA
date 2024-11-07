@@ -6,21 +6,19 @@ import {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // Ensure jwt-decode is correctly imported as a default export
-import useExpirationTimer from "../../utils/useExpirationTimer"; // Adjust path if necessary
-import TokenExpirationTimer from "../../components/atoms/TokenExpirationTimer";
-import { UsersContextType, User, UsersState } from "../../types/UsersTypes";
+import { jwtDecode } from "jwt-decode";
+import useExpirationTimer from "../../utils/useExpirationTimer";
+import {
+  UsersContextType,
+  User,
+  UsersState,
+  DecodedToken,
+} from "../../types/UsersTypes";
 import { usersReducer } from "./usersReducer";
 
 type UsersProviderProps = {
   children: React.ReactNode;
 };
-
-// Define DecodedToken interface to avoid 'any' type
-interface DecodedToken {
-  userId: string;
-  exp: number;
-}
 
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
 
@@ -36,7 +34,6 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const navigate = useNavigate();
 
-  // Apply useExpirationTimer with token expiration time
   useExpirationTimer(tokenExpiration);
 
   const fetchUsers = useCallback(async () => {
@@ -76,7 +73,6 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         dispatch({ type: "LOGIN", payload: userData });
         setSessionRestored(true);
 
-        // Decode token to get expiration and set it
         const decodedToken: DecodedToken = jwtDecode(token);
         setTokenExpiration(decodedToken.exp * 1000); // Convert exp to ms
       }
@@ -275,7 +271,6 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
       }}
     >
       {children}
-      <TokenExpirationTimer token={tokenExpiration} />
     </UsersContext.Provider>
   );
 };
