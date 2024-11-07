@@ -125,6 +125,21 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     }
   };
 
+  const checkUsernameAvailability = async (username: User["username"]) => {
+    try {
+      const response = await fetch(
+        `/api/users/checkUsername?username=${username}`
+      );
+      if (!response.ok)
+        throw new Error("Failed to check username availability");
+      const data = await response.json();
+      return !data.exists;
+    } catch (error) {
+      console.error("Error checking username availability:", error);
+      return false;
+    }
+  };
+
   const login = async (credentials: { username: string; password: string }) => {
     try {
       const response = await fetch("/api/users/login", {
@@ -234,7 +249,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setTokenExpiration(null); // Clear expiration timer
+    setTokenExpiration(null);
     dispatch({ type: "LOGOUT" });
     dispatch({ type: "CLEAR_USERS" });
     setUsersFetched(false);
@@ -250,6 +265,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         fetchUsers,
         fetchUserById,
         addUser,
+        checkUsernameAvailability,
         login,
         updateUsername,
         updateProfileImage,
