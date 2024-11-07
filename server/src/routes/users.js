@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import fs, { lchown } from "fs";
 import jwt from "jsonwebtoken";
 import { fileURLToPath } from "url";
 
@@ -126,6 +126,22 @@ router.post("/", upload.single("profileImage"), async (req, res) => {
     res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
+// Route to check whether username is already occupied
+router.get("/checkUsername", async (req, res) => {
+  console.log("Checking username availabitity");
+  console.log(req.query);
+  const { username } = req.query;
+
+  try {
+    const existingUser = await usersCollection.findOne({ username });
+    res.status(200).json({ exists: !!existingUser });
+    console.log({ exists: !!existingUser });
+  } catch (err) {
+    console.error("Error checking username:", err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
