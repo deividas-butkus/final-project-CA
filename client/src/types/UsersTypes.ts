@@ -5,6 +5,7 @@ export type UsersContextType = {
   fetchUsers: () => Promise<void>;
   fetchUserById: (userId: User["_id"]) => Promise<User | null>;
   addUser: (user: FormData) => Promise<void>;
+  checkUsernameAvailability: (username: User["username"]) => Promise<boolean>;
   login: (credentials: { username: string; password: string }) => Promise<void>;
   updateUsername: (newUsername: string) => Promise<void>;
   updateProfileImage: (file: File | null) => Promise<void>;

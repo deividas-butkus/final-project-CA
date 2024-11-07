@@ -21,8 +21,9 @@ const StyledSection = styled.section`
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Register = () => {
-  const { addUser } = useUsersContext();
+  const { addUser, checkUsernameAvailability } = useUsersContext();
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
   const [registerSuccess, setRegisterSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -56,6 +57,21 @@ const Register = () => {
     }
   };
 
+  const handleUsernameBlur = async (username: string) => {
+    if (username.length < 5 || username.length > 20) return;
+
+    const isAvailable = await checkUsernameAvailability(username);
+    setUsernameError(
+      isAvailable
+        ? null
+        : "This username is already taken. Please choose another one."
+    );
+  };
+
+  const handleUsernameFocus = () => {
+    setUsernameError(null);
+  };
+
   return (
     <StyledSection>
       <h2>Register</h2>
@@ -68,7 +84,9 @@ const Register = () => {
               label="Username"
               type="text"
               {...field}
-              error={errors.username?.message}
+              onFocus={handleUsernameFocus}
+              onBlur={() => handleUsernameBlur(field.value)}
+              error={usernameError || errors.username?.message}
               placeholder="Enter your username"
             />
           )}

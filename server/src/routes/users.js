@@ -129,6 +129,22 @@ router.post("/", upload.single("profileImage"), async (req, res) => {
   }
 });
 
+// Route to check whether username is already occupied
+router.get("/checkUsername", async (req, res) => {
+  console.log("Checking username availabitity");
+  console.log(req.query);
+  const { username } = req.query;
+
+  try {
+    const existingUser = await usersCollection.findOne({ username });
+    res.status(200).json({ exists: !!existingUser });
+    console.log({ exists: !!existingUser });
+  } catch (err) {
+    console.error("Error checking username:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 // Route to update username
 router.patch("/updateUsername", authenticateToken, async (req, res) => {
   const { username } = req.body;

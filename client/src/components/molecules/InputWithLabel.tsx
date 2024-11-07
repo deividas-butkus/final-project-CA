@@ -96,6 +96,9 @@ type InputWithLabelProps = {
   onBlur?: (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
+  onFocus?: (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   placeholder?: string;
   error?: string;
   labelColor?: string;
@@ -119,6 +122,7 @@ const InputWithLabel = forwardRef<
       value,
       onChange,
       onBlur,
+      onFocus,
       placeholder,
       error,
       labelColor,
@@ -215,6 +219,7 @@ const InputWithLabel = forwardRef<
             value={value as string}
             onChange={handleChange}
             onBlur={onBlur}
+            onFocus={onFocus}
             placeholder={placeholder}
             $padding={inputPadding}
             $borderColor={borderColor}
@@ -233,6 +238,7 @@ const InputWithLabel = forwardRef<
             value={type === "file" ? undefined : (value as string)}
             onChange={onChange}
             onBlur={onBlur}
+            onFocus={onFocus}
             placeholder={placeholder}
             $padding={inputPadding}
             $borderColor={borderColor}
