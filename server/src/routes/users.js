@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import multer from "multer";
 import path from "path";
-import fs, { lchown } from "fs";
+import fs from "fs";
 import jwt from "jsonwebtoken";
 import { fileURLToPath } from "url";
 
