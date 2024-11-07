@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import styled from "styled-components";
 
 import { useChatsContext } from "../../../contexts/chats/useChatsContext";
 import ChatCard from "../../molecules/ChatCard";
+import TokenExpirationTimer from "../../atoms/TokenExpirationTimer";
+import UsersContext from "../../../contexts/users/UsersContext";
+import { UsersContextType } from "../../../types/UsersTypes"; // Ensure this import path is correct
 
 const StyledSection = styled.section`
   margin-bottom: 50px;
@@ -15,6 +18,7 @@ const StyledSection = styled.section`
 
 const Chats = () => {
   const { chats, fetchChatsSummary } = useChatsContext();
+  const { tokenExpiration } = useContext(UsersContext) as UsersContextType; // Cast context to UsersContextType
 
   useEffect(() => {
     fetchChatsSummary();
@@ -23,6 +27,7 @@ const Chats = () => {
   return (
     <StyledSection>
       <h2>Chats</h2>
+      <TokenExpirationTimer token={tokenExpiration} />
       <div>
         {chats.map((chat) => (
           <ChatCard key={chat._id} chat={chat} />
