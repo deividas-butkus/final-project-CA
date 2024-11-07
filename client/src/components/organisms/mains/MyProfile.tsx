@@ -50,6 +50,11 @@ const StyledSection = styled.section`
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+    div.inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
   }
   div.buttonContainer {
     display: flex;
@@ -257,7 +262,7 @@ const MyProfile = () => {
       <hr />
 
       <div className="fieldContainer">
-        <div>
+        <div className="inputs">
           {isEditingPassword && (
             <>
               <InputWithLabel
