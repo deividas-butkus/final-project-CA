@@ -1,4 +1,4 @@
-# Library Management System
+# Chat Management System
 
 This project is a full-stack chat management system built with a React frontend and an Express backend, along with MongoDB for data storage.
 
@@ -135,10 +135,11 @@ After cloning the repository, follow the setup instructions below for both the f
 
 - `client/src/components`:
 
-  - `molecules`: Contains reusable components like `MessageCard`.
-  - `organisms`: Contains specific main components like `Users`, `Chats`, which are wrapped with `Footer`, and `Header` in `App` routes using `templates` folder containing `PageTemplate`.
+  - `atoms`: Contains reusable components like `Avatar`, `Button`, `Counter`and others.
+  - `molecules`: Contains reusable components like `ChatCard`, `MessageCard`, `InputWithLabels` and others.
+  - `organisms`: Contains specific main components like `Chat`, `Chats`, `Contacts`, and others, which are wrapped with `Footer`, and `Header` in `App` routes using `templates` folder containing `Layout`.
 
-- `server/src/routes`: Contains Express routes like `chats.js` for handling API requests.
+- `server/src/routes`: Contains Express routes like `users.js`, `chats.js`, `messages.js` for handling API requests.
 
 ---
 
