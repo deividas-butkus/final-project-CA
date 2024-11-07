@@ -93,6 +93,10 @@ const MyProfile = () => {
     string | null
   >(null);
 
+  const hasProfileImage =
+    currentUser?.profileImage &&
+    currentUser.profileImage !== "/uploads/defaultProfileImage.png";
+
   useEffect(() => {
     if (currentUser) {
       setNewUsername(currentUser.username);
@@ -234,18 +238,17 @@ const MyProfile = () => {
               <Button onClick={() => setIsEditingProfileImage(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleDeleteProfileImage}>
-                Delete Profile Image
-              </Button>
             </>
           ) : (
             <>
               <Button onClick={() => setIsEditingProfileImage(true)}>
-                Change Profile Image
+                {hasProfileImage ? "Change Profile Image" : "Add Profile Image"}
               </Button>
-              <Button className="delete" onClick={handleDeleteProfileImage}>
-                Delete Profile Image
-              </Button>
+              {hasProfileImage && (
+                <Button className="delete" onClick={handleDeleteProfileImage}>
+                  Delete Profile Image
+                </Button>
+              )}
             </>
           )}
         </div>
