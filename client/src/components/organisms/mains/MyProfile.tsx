@@ -63,7 +63,7 @@ const StyledSection = styled.section`
   }
   hr {
     border: 0;
-    border-top: 1px solid #524f4f;
+    border-top: 1px solid #5b5c5c;
     margin: 20px 0;
   }
 `;
