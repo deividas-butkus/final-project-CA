@@ -68,6 +68,9 @@ const StyledSection = styled.section`
         margin-bottom: 10px;
         font-size: 0.9rem;
       }
+      svg {
+        font-size: larger;
+      }
     }
   }
 `;
