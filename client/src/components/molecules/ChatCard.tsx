@@ -20,7 +20,7 @@ const StyledDiv = styled.div`
     > div {
       display: flex;
       gap: 30px;
-      min-width: 500px;
+      min-width: 400px;
       border-radius: 7px;
       padding: 5px 10px;
       box-shadow: 1px 1px 3px ${({ theme }) => theme.accent};
@@ -57,6 +57,7 @@ const StyledDiv = styled.div`
 
         p {
           margin: 0;
+          color: ${({ theme }) => theme.text};
         }
 
         > p.timestamp {
