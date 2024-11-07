@@ -1,5 +1,25 @@
-import styled, { useTheme } from "styled-components";
+import styled, { useTheme, keyframes } from "styled-components";
 import Button from "../atoms/Button";
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const scaleUp = keyframes`
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
 
 const Overlay = styled.div`
   position: fixed;
@@ -13,15 +33,17 @@ const Overlay = styled.div`
   align-items: center;
   color: #000;
   z-index: 1000;
+  animation: ${fadeIn} 0.3s ease-out;
 `;
 
 const DialogBox = styled.div`
-  background: white;
+  background: #f0feff;
   padding: 20px;
   width: 300px;
   max-width: 80%;
   border-radius: 8px;
   text-align: center;
+  animation: ${scaleUp} 0.3s ease-out;
 `;
 
 const Title = styled.h2`

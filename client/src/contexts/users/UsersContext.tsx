@@ -6,21 +6,19 @@ import {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // Ensure jwt-decode is correctly imported as a default export
-import useExpirationTimer from "../../utils/useExpirationTimer"; // Adjust path if necessary
-import TokenExpirationTimer from "../../components/atoms/TokenExpirationTimer";
-import { UsersContextType, User, UsersState } from "../../types/UsersTypes";
+import { jwtDecode } from "jwt-decode";
+import useCountdown from "../../hooks/useCountdown";
+import {
+  UsersContextType,
+  User,
+  UsersState,
+  DecodedToken,
+} from "../../types/UsersTypes";
 import { usersReducer } from "./usersReducer";
 
 type UsersProviderProps = {
   children: React.ReactNode;
 };
-
-// Define DecodedToken interface to avoid 'any' type
-interface DecodedToken {
-  userId: string;
-  exp: number;
-}
 
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
 
@@ -36,8 +34,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const navigate = useNavigate();
 
-  // Apply useExpirationTimer with token expiration time
-  useExpirationTimer(tokenExpiration);
+  useCountdown(tokenExpiration);
 
   const fetchUsers = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -76,9 +73,8 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         dispatch({ type: "LOGIN", payload: userData });
         setSessionRestored(true);
 
-        // Decode token to get expiration and set it
         const decodedToken: DecodedToken = jwtDecode(token);
-        setTokenExpiration(decodedToken.exp * 1000); // Convert exp to ms
+        setTokenExpiration(decodedToken.exp * 1000);
       }
     } catch (error) {
       console.error("Failed to restore session:", error);
@@ -156,9 +152,8 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
       localStorage.setItem("token", token);
       dispatch({ type: "LOGIN", payload: user });
 
-      // Decode token to set expiration
       const decodedToken: DecodedToken = jwtDecode(token);
-      setTokenExpiration(decodedToken.exp * 1000); // Set expiration in ms
+      setTokenExpiration(decodedToken.exp * 1000);
 
       await fetchUsers();
     } catch (err) {
@@ -178,11 +173,20 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         },
         body: JSON.stringify({ username: newUsername }),
       });
+
+      if (response.status === 400) {
+        throw new Error(
+          "This username is already taken. Please choose another."
+        );
+      }
+
       if (!response.ok) throw new Error("Failed to update username");
 
-      dispatch({ type: "UPDATE_USERNAME", payload: newUsername });
+      const updatedUser = await response.json();
+      dispatch({ type: "UPDATE_USERNAME", payload: updatedUser.username });
     } catch (err) {
       console.error("Failed to update username:", err);
+      throw err; // This will be caught in MyProfile
     }
   };
 
@@ -275,7 +279,6 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
       }}
     >
       {children}
-      <TokenExpirationTimer token={tokenExpiration} />
     </UsersContext.Provider>
   );
 };

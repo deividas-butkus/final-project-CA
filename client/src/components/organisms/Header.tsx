@@ -7,7 +7,6 @@ import UserNavBox from "../molecules/UserNavBox";
 
 const StyledHeader = styled.header`
   height: 100px;
-  padding: 0 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -30,6 +30,9 @@ const StyledButton = styled.button`
   outline: none;
   box-shadow: none;
   cursor: pointer;
+  > svg {
+    font-size: larger;
+  }
 `;
 
 const UserNavBox = () => {

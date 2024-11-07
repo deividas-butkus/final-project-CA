@@ -14,6 +14,10 @@ const GlobalStyles = createGlobalStyle`
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
+  header, main, footer {
+    padding: 0 10%;
+  }
+
   h2, h3, h4, p {
     font-weight: 300;
   }
@@ -33,6 +37,12 @@ const GlobalStyles = createGlobalStyle`
       transform: scale(1.05);
     }
   }
+
+  @media (min-width: 950px) {
+    header, main, footer {
+    padding: 0 20%;
+  }
+}
 
 `;
 

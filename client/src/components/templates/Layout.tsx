@@ -5,8 +5,7 @@ import Header from "../organisms/Header";
 import Footer from "../organisms/Footer";
 
 const StyledMain = styled.main`
-  padding: 10px 5%;
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 100px);
   display: flex;
   flex-direction: column;
   flex-grow: 1;
