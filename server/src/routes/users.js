@@ -15,7 +15,7 @@ const router = Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadDir = path.join(__dirname, "..", "uploads", "profileImages");
-const defaultImagePath = "/uploads/defaultProfileImage.png"; // Path to the default image
+const defaultImagePath = "/uploads/defaultProfileImage.png";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -152,6 +152,7 @@ router.patch("/updateUsername", authenticateToken, async (req, res) => {
 
   try {
     const existingUser = await usersCollection.findOne({ username });
+
     if (existingUser && existingUser._id !== userId) {
       return res.status(400).json({ message: "Username already occupied" });
     }
@@ -180,7 +181,6 @@ router.patch(
     }
 
     try {
-      // Retrieve the user's current profile image path
       const user = await usersCollection.findOne({ _id: userId });
       if (!user) {
         console.error("User not found for update:", userId);
@@ -190,7 +190,6 @@ router.patch(
       const oldProfileImage = user.profileImage;
       const newProfileImage = `/uploads/profileImages/${req.file.filename}`;
 
-      // Update the user's profile image in the database
       const result = await usersCollection.updateOne(
         { _id: userId },
         { $set: { profileImage: newProfileImage } }
@@ -203,11 +202,9 @@ router.patch(
           .json({ message: "Failed to update profile image in database" });
       }
 
-      // Delete the old image file if it exists and is not the default image
       if (oldProfileImage && oldProfileImage !== defaultImagePath) {
         const oldImagePath = path.join(__dirname, "..", oldProfileImage);
 
-        // Check if the file exists before trying to delete it
         if (fs.existsSync(oldImagePath)) {
           fs.unlink(oldImagePath, (err) => {
             if (err) {
@@ -221,7 +218,6 @@ router.patch(
         }
       }
 
-      // Fetch and return the updated user data
       const updatedUser = await usersCollection.findOne({ _id: userId });
       res.status(200).json(updatedUser);
     } catch (err) {

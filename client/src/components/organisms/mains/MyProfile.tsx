@@ -71,6 +71,9 @@ const StyledSection = styled.section`
     border-top: 1px solid #5b5c5c;
     margin: 20px 0;
   }
+  p {
+    text-align: end;
+  }
 `;
 
 const MyProfile = () => {
@@ -93,6 +96,7 @@ const MyProfile = () => {
   const [loading, setLoading] = useState(true);
 
   const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<
     string | null
@@ -130,10 +134,15 @@ const MyProfile = () => {
     }
   };
 
-  const handleSaveUsername = () => {
+  const handleSaveUsername = async () => {
     if (!usernameError) {
-      updateUsername(newUsername);
-      setIsEditingUsername(false);
+      try {
+        await updateUsername(newUsername);
+        setIsEditingUsername(false);
+      } catch (err) {
+        const errorMessage = (err as Error).message || "An error occurred.";
+        setUsernameError(errorMessage);
+      }
     }
   };
 
@@ -148,12 +157,23 @@ const MyProfile = () => {
     setIsEditingProfileImage(false);
   };
 
-  const handleSavePassword = () => {
+  const handleSavePassword = async () => {
     if (!passwordError && !confirmPasswordError) {
-      updatePassword(newPassword);
-      setIsEditingPassword(false);
-      setNewPassword("");
-      setConfirmPassword("");
+      try {
+        await updatePassword(newPassword);
+        setIsEditingPassword(false);
+        setNewPassword("");
+        setConfirmPassword("");
+        setPasswordSuccess("Password saved successfully!");
+        setPasswordError(null);
+      } catch (err) {
+        if (err instanceof Error) {
+          setPasswordError(err.message);
+        } else {
+          setPasswordError("Failed to save the password.");
+        }
+        setPasswordSuccess(null);
+      }
     }
   };
 
@@ -167,6 +187,13 @@ const MyProfile = () => {
       payload: "/uploads/defaultProfileImage.png",
     });
   };
+
+  useEffect(() => {
+    if (passwordSuccess) {
+      const timer = setTimeout(() => setPasswordSuccess(null), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [passwordSuccess]);
 
   if (loading) return <p>Loading profile...</p>;
 
@@ -303,6 +330,8 @@ const MyProfile = () => {
           )}
         </div>
       </div>
+      {passwordSuccess && <p style={{ color: "green" }}>{passwordSuccess}</p>}
+      {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
       <hr />
     </StyledSection>
   );

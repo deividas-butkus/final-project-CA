@@ -173,11 +173,20 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         },
         body: JSON.stringify({ username: newUsername }),
       });
+
+      if (response.status === 400) {
+        throw new Error(
+          "This username is already taken. Please choose another."
+        );
+      }
+
       if (!response.ok) throw new Error("Failed to update username");
 
-      dispatch({ type: "UPDATE_USERNAME", payload: newUsername });
+      const updatedUser = await response.json();
+      dispatch({ type: "UPDATE_USERNAME", payload: updatedUser.username });
     } catch (err) {
       console.error("Failed to update username:", err);
+      throw err; // This will be caught in MyProfile
     }
   };
 
