@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import useExpirationTimer from "../../utils/useExpirationTimer";
+import useCountdown from "../../hooks/useCountdown";
 import {
   UsersContextType,
   User,
@@ -34,7 +34,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const navigate = useNavigate();
 
-  useExpirationTimer(tokenExpiration);
+  useCountdown(tokenExpiration);
 
   const fetchUsers = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -74,7 +74,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         setSessionRestored(true);
 
         const decodedToken: DecodedToken = jwtDecode(token);
-        setTokenExpiration(decodedToken.exp * 1000); // Convert exp to ms
+        setTokenExpiration(decodedToken.exp * 1000);
       }
     } catch (error) {
       console.error("Failed to restore session:", error);
@@ -152,9 +152,8 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
       localStorage.setItem("token", token);
       dispatch({ type: "LOGIN", payload: user });
 
-      // Decode token to set expiration
       const decodedToken: DecodedToken = jwtDecode(token);
-      setTokenExpiration(decodedToken.exp * 1000); // Set expiration in ms
+      setTokenExpiration(decodedToken.exp * 1000);
 
       await fetchUsers();
     } catch (err) {
