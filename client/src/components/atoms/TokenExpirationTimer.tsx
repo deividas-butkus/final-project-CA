@@ -3,13 +3,14 @@ import useCountdown from "../../hooks/useCountdown";
 
 const StyledParagraph = styled.p`
   margin: 0%;
-  padding: 7px 10%;
+  padding: 7px 15%;
   font-size: 0.8rem;
   text-align: end;
   color: ${({ theme }) => theme.text};
+
   @media (min-width: 950px) {
     & {
-      padding: 7px 20%;
+      padding: 7px 25%;
     }
   }
 `;

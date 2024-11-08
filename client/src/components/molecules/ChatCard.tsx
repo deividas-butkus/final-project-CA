@@ -20,7 +20,7 @@ const StyledDiv = styled.div`
     > div {
       display: flex;
       gap: 30px;
-      min-width: 400px;
+      min-width: 350px;
       border-radius: 7px;
       padding: 5px 10px;
       box-shadow: 1px 1px 3px ${({ theme }) => theme.accent};

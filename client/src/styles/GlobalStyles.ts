@@ -15,7 +15,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   header, main, footer {
-    padding: 0 10%;
+    padding: 0 15%;
   }
 
   h2, h3, h4, p {
@@ -40,7 +40,7 @@ const GlobalStyles = createGlobalStyle`
 
   @media (min-width: 950px) {
     header, main, footer {
-    padding: 0 20%;
+    padding: 0 25%;
   }
 }
 

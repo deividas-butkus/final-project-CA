@@ -7,7 +7,7 @@ import hero from "../../../assets/hero.webp";
 
 const StyledSection = styled.section`
   > div.heroImg {
-    height: 250px;
+    height: 350px;
     display: flex;
     justify-content: space-around;
     > img {
@@ -18,9 +18,9 @@ const StyledSection = styled.section`
   }
   > h1 {
     font-weight: 200;
-    font-size: 1.4rem;
+    font-size: 2rem;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 60px;
   }
   > div.entryBoxesContainer {
     display: flex;

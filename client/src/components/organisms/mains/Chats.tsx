@@ -29,7 +29,9 @@ const Chats = () => {
           chats.map((chat) => <ChatCard key={chat._id} chat={chat} />)
         ) : (
           <p>
-            No chats yet. Choose a contact for a conversation to see it here!
+            No chats yet.
+            <br />
+            Choose a contact for a conversation to see a chat here!
           </p>
         )}
       </div>
