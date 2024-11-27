@@ -12,6 +12,7 @@ export type UsersContextType = {
   updatePassword: (newPassword: string) => Promise<void>;
   logout: () => void;
   tokenExpiration: number | null;
+  isTokenValid: (token: string) => boolean;
 };
 
 export type User = {
