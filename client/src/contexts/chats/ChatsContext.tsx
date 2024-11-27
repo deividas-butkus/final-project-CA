@@ -70,7 +70,7 @@ async function setLastSeenHelper(
 
 export const ChatsProvider = ({ children }: ChatsProviderProps) => {
   const initialState = { chats: [], selectedChat: null };
-  const { currentUser } = useUsersContext();
+  const { currentUser, isTokenValid } = useUsersContext();
   const [state, dispatch] = useReducer(chatsReducer, initialState);
 
   const fetchChatById = useCallback(
@@ -110,7 +110,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
 
   const fetchChatsSummary = useCallback(async () => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!isTokenValid) return;
 
     try {
       const response = await fetch("/api/chats/summary", {
@@ -128,7 +128,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     } catch (error) {
       console.error("Error fetching chats:", error);
     }
-  }, [dispatch]);
+  }, [dispatch, isTokenValid]);
 
   useEffect(() => {}, [state.chats]);
 
@@ -138,8 +138,11 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
   );
 
   useEffect(() => {
-    debouncedFetchChatsSummary();
-  }, [debouncedFetchChatsSummary]);
+    const token = localStorage.getItem("token");
+    if (token && isTokenValid(token)) {
+      debouncedFetchChatsSummary();
+    }
+  }, [debouncedFetchChatsSummary, isTokenValid]);
 
   const setLastSeen = useCallback(
     async (chatId: Chat["_id"]) => {

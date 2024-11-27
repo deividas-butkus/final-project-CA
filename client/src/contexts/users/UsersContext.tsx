@@ -36,9 +36,20 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   useCountdown(tokenExpiration);
 
+  const isTokenValid = (token: string): boolean => {
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp > currentTime;
+    } catch (error) {
+      console.error("Invalid token", error);
+      return false;
+    }
+  };
+
   const fetchUsers = useCallback(async () => {
     const token = localStorage.getItem("token");
-    if (!token || usersFetched) return;
+    if (!token || !isTokenValid(token) || usersFetched) return;
 
     try {
       const response = await fetch("/api/users", {
@@ -60,7 +71,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   const restoreSession = useCallback(async () => {
     const token = localStorage.getItem("token");
-    if (!token || sessionRestored) return;
+    if (!token || !isTokenValid(token) || sessionRestored) return;
 
     try {
       const response = await fetch("/api/users/current", {
@@ -276,6 +287,7 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
         updatePassword,
         logout,
         tokenExpiration,
+        isTokenValid,
       }}
     >
       {children}
