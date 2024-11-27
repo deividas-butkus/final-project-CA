@@ -36,6 +36,17 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
 
   useCountdown(tokenExpiration);
 
+  const isTokenValid = (token: string): boolean => {
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp > currentTime;
+    } catch (error) {
+      console.error("Invalid token", error);
+      return false;
+    }
+  };
+
   const fetchUsers = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token || usersFetched) return;
