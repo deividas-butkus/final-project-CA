@@ -38,6 +38,24 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ccc;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #5B5C5C;
+  border-radius: 10px;
+  &:hover {
+    background: #555;
+  }
+}
+
   @media (min-width: 950px) {
     header, main, footer {
     padding: 0 25%;
