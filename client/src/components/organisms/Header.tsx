@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useMediaQuery } from "@mui/material";
 
 import { useUsersContext } from "../../contexts/users/useUsersContext";
@@ -17,7 +17,8 @@ const StyledHeader = styled.header`
 
 const Header = () => {
   const { currentUser } = useUsersContext();
-  const isNotMobile = useMediaQuery("(min-width: 576px)");
+  const theme = useTheme();
+  const isNotMobile = useMediaQuery(theme.media.mobile);
 
   return (
     <StyledHeader>

@@ -14,8 +14,12 @@ const GlobalStyles = createGlobalStyle`
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  header, main, footer {
-    padding: 0 15%;
+  header, main, p.tokenExpirationTimerPar, footer {
+    padding: 0 5%;
+  }
+
+  p.tokenExpirationTimerPar {
+    margin-bottom: 7px;
   }
 
   h2, h3, h4, p {
@@ -38,30 +42,41 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #ccc;
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #5B5C5C;
-  border-radius: 10px;
-  &:hover {
-    background: #555;
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-}
 
-  @media (min-width: 950px) {
-    header, main, footer {
-    padding: 0 25%;
+  ::-webkit-scrollbar-track {
+    background: #ccc;
+    border-radius: 8px;
   }
-}
 
+  ::-webkit-scrollbar-thumb {
+    background: #5B5C5C;
+    border-radius: 10px;
+    &:hover {
+      background: #555;
+    }
+  }
+
+  ${({ theme }) => theme.media.mobile} {
+    header, main, p.tokenExpirationTimerPar, footer {
+    padding: 0 10%;
+    }
+  }
+
+  ${({ theme }) => theme.media.tablet} {
+    header, main, p.tokenExpirationTimerPar, footer {
+    padding: 0 15%;
+    }
+  }
+
+  ${({ theme }) => theme.media.desktop} {
+    header, main, p.tokenExpirationTimerPar, footer {
+    padding: 0 20%;
+    }
+  }
 `;
 
 export default GlobalStyles;
