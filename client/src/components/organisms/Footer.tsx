@@ -12,8 +12,16 @@ const StyledFooter = styled.footer`
   background-color: #3a5b68;
   color: #fff;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: top;
+  align-items: start;
+  padding-top: 0.5rem;
+  ${({ theme }) => theme.media.mobile} {
+    flex-direction: row;
+  }
+  p {
+    margin: 0;
+  }
   > div {
     a {
       color: inherit;
@@ -21,15 +29,16 @@ const StyledFooter = styled.footer`
       &:hover {
       }
     }
+    margin: 0.5rem 0;
   }
   > div.privacyAndTC {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
   }
   > div.social {
     display: flex;
-    gap: 10px;
-    margin-top: 16px;
+    gap: 0.625rem;
+    margin: 0.5rem 0;
   }
 `;
 

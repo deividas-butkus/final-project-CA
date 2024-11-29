@@ -18,7 +18,9 @@ const TokenExpirationTimer = ({ token }: TokenExpirationTimerProps) => {
   if (remainingTime === null) return null;
   if (remainingTime === 0)
     return (
-      <StyledParagraph>Session expired. Please log in again.</StyledParagraph>
+      <StyledParagraph className="tokenExpirationTimerPar">
+        Session expired. Please log in again.
+      </StyledParagraph>
     );
 
   const minutes = Math.floor(remainingTime / 60);

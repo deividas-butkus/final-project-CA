@@ -5,7 +5,7 @@ const StyledButton = styled.button<Props>`
   font-weight: 300;
   border: 1px solid transparent;
   width: ${({ $width }) => $width || "auto"};
-  font-size: ${({ $fontSize }) => $fontSize || "14px"};
+  font-size: ${({ $fontSize }) => $fontSize || "0.8rem"};
   background-color: ${({ theme, $bgColor }) => $bgColor || theme.buttonBg};
   color: ${({ theme, $color }) => $color || theme.buttonText};
   padding: ${({ $padding }) => $padding || "10px 20px"};

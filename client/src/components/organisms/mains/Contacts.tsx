@@ -8,7 +8,7 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
   gap: 7px;
-  margin-bottom: 50px;
+  margin-bottom: 2rem;
 `;
 
 const Contacts = () => {
@@ -18,7 +18,6 @@ const Contacts = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  // Filter out the current user
   const otherUsers = users.filter((user) => user._id !== currentUser?._id);
 
   return (

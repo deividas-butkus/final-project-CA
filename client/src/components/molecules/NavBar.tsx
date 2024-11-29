@@ -11,7 +11,7 @@ const StyledNav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 0.7rem;
   }
 `;
 
