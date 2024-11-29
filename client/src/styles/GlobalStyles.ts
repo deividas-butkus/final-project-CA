@@ -14,8 +14,12 @@ const GlobalStyles = createGlobalStyle`
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  header, main, footer {
+  header, main, p.tokenExpirationTimerPar, footer {
     padding: 0 5%;
+  }
+
+  p.tokenExpirationTimerPar {
+    margin-bottom: 7px;
   }
 
   h2, h3, h4, p {
@@ -57,19 +61,19 @@ const GlobalStyles = createGlobalStyle`
   }
 
   ${({ theme }) => theme.media.mobile} {
-    header, main, footer {
+    header, main, p.tokenExpirationTimerPar, footer {
     padding: 0 10%;
     }
   }
 
   ${({ theme }) => theme.media.tablet} {
-    header, main, footer {
+    header, main, p.tokenExpirationTimerPar, footer {
     padding: 0 15%;
     }
   }
 
   ${({ theme }) => theme.media.desktop} {
-    header, main, footer {
+    header, main, p.tokenExpirationTimerPar, footer {
     padding: 0 20%;
     }
   }
