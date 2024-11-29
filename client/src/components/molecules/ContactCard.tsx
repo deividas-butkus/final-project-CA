@@ -9,7 +9,6 @@ const StyledArticle = styled.article`
   ${({ theme }) => theme.media.mobile} {
     width: 80%;
   }
-
   > a {
     display: flex;
     align-items: center;
