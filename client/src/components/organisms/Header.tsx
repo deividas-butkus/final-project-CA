@@ -8,11 +8,18 @@ import UserNavBox from "../molecules/UserNavBox";
 import BurgerMenu from "./BurgerMenu";
 
 const StyledHeader = styled.header`
-  height: 100px;
+  position: sticky;
+  top: 0;
+  height: 4rem;
+  ${({ theme }) => theme.media.mobile} {
+    height: 5rem;
+  }
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 0.5px solid #5b5c5c;
+  background-color: ${({ theme }) => theme.background};
+  z-index: 1000;
 `;
 
 const Header = () => {
