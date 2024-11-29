@@ -3,6 +3,7 @@ import { IconButton, Drawer } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import styled from "styled-components";
 import NavLinks from "../molecules/NavLinks";
+import UserNavBox from "../molecules/UserNavBox";
 
 const StyledBurgerButtonWrapper = styled.div`
   display: flex;
@@ -57,6 +58,7 @@ const BurgerMenu = () => {
       >
         <ul>
           <NavLinks />
+          <UserNavBox />
         </ul>
       </StyledDrawer>
     </>
