@@ -5,13 +5,17 @@ import { useUsersContext } from "../../contexts/users/useUsersContext";
 import { User } from "../../types/UsersTypes";
 
 const StyledArticle = styled.article`
-  width: 500px;
+  width: 100%;
+  ${({ theme }) => theme.media.mobile} {
+    width: 80%;
+  }
+
   > a {
     display: flex;
     align-items: center;
     gap: 20px;
     padding: 5px 10px;
-    height: 40px;
+    height: 3rem;
     box-shadow: 1px 1px 3px ${({ theme }) => theme.accent};
     border-radius: 5px;
     color: ${({ theme }) => theme.accent};
