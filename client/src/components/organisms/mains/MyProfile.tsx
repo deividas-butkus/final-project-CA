@@ -30,7 +30,7 @@ const StyledSection = styled.section`
     div.profileImage {
       width: 100%;
       max-width: 300px;
-      height: 300px;
+      aspect-ratio: 1;
       display: flex;
       justify-content: center;
       align-items: center;
