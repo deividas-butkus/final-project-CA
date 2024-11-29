@@ -10,8 +10,9 @@ const StyledSection = styled.section`
     height: 350px;
     display: flex;
     justify-content: space-around;
+    align-items: center;
     > img {
-      height: 100%;
+      height: 80%;
       border-radius: 15px;
       box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
     }
