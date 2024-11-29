@@ -11,63 +11,71 @@ import { Message } from "../../types/MessagesTypes";
 import Dialog from "./Dialog";
 
 const StyledDiv = styled.div`
+  width: 100%;
   height: auto;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-
+  align-items: start;
+  gap: 0.5rem;
+  ${({ theme }) => theme.media.mobile} {
+    flex-direction: row;
+    align-items: center;
+  }
   > a {
+    width: 100%;
+    ${({ theme }) => theme.media.mobile} {
+      width: 70%;
+    }
     > div {
       display: flex;
       gap: 30px;
-      min-width: 350px;
+      width: 100%;
       border-radius: 7px;
       padding: 5px 10px;
       box-shadow: 1px 1px 3px ${({ theme }) => theme.accent};
-
       > img {
         height: 70px;
         width: 70px;
         object-fit: cover;
         border-radius: 7px;
       }
-
       > div {
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 10px;
-
         .title-container {
           display: flex;
           align-items: center;
           position: relative;
-
           h4 {
             margin: 0;
             color: ${({ theme }) => theme.accent};
           }
-
           .counter {
             position: absolute;
             top: -7px;
             right: -17px;
           }
         }
-
         p {
           margin: 0;
+          font-size: 0.8rem;
           color: ${({ theme }) => theme.text};
         }
-
         > p.timestamp {
-          font-size: small;
+          font-size: 0.6rem;
           font-weight: 100;
         }
       }
     }
   }
   > button {
+    align-self: flex-end;
+    ${({ theme }) => theme.media.mobile} {
+      align-self: center;
+    }
     &:hover {
       color: #fff;
     }
