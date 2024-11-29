@@ -7,12 +7,21 @@ import hero from "../../../assets/hero.webp";
 
 const StyledSection = styled.section`
   > div.heroImg {
-    height: 350px;
+    padding-top: 2rem;
+    width: 100%;
+    aspect-ratio: 16/9;
     display: flex;
     justify-content: space-around;
     align-items: center;
     > img {
-      height: 80%;
+      width: 80%;
+      ${({ theme }) => theme.media.mobile} {
+        width: 60%;
+      }
+      ${({ theme }) => theme.media.tablet} {
+        width: 50%;
+      }
+      height: auto;
       border-radius: 15px;
       box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
     }
@@ -21,26 +30,26 @@ const StyledSection = styled.section`
     font-weight: 200;
     font-size: 2rem;
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 3rem;
   }
   > div.entryBoxesContainer {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 1rem;
     > div.entryBox {
-      height: 100px;
-      width: 150px;
-      border-radius: 10px;
-      padding: 10px;
+      height: auto;
+      width: 9.5rem;
+      border-radius: 0.625rem;
+      padding: 0.625rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
+      align-items: start;
       > div {
         > a {
           display: flex;
           align-items: center;
-          gap: 7px;
+          gap: 0.5rem;
         }
       }
 
