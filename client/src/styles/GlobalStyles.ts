@@ -2,6 +2,10 @@ import { createGlobalStyle } from "styled-components";
 import "normalize.css";
 
 const GlobalStyles = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+  }
+  
   body {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     font-weight: 400;
