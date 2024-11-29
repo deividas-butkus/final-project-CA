@@ -60,21 +60,24 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
-  ${({ theme }) => theme.media.mobile} {
-    header, main, p.tokenExpirationTimerPar, footer {
-    padding: 0 10%;
+  html {
+    ${({ theme }) => theme.media.tablet} {
+      font-size: 18px;
+    }
+    ${({ theme }) => theme.media.desktop} {
+      font-size: 20px;
     }
   }
 
-  ${({ theme }) => theme.media.tablet} {
-    header, main, p.tokenExpirationTimerPar, footer {
-    padding: 0 15%;
+  header, main, p.tokenExpirationTimerPar, footer {
+    ${({ theme }) => theme.media.mobile} {
+      padding: 0 10%;
     }
-  }
-
-  ${({ theme }) => theme.media.desktop} {
-    header, main, p.tokenExpirationTimerPar, footer {
-    padding: 0 20%;
+    ${({ theme }) => theme.media.tablet} {
+      padding: 0 15%;
+    }
+    ${({ theme }) => theme.media.desktop} {
+      padding: 0 20%;
     }
   }
 `;
