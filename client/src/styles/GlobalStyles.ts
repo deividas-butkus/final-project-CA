@@ -74,10 +74,10 @@ const GlobalStyles = createGlobalStyle`
   }
 
   header, main, p.tokenExpirationTimerPar, footer {
-    ${({ theme }) => theme.media.mobile} {
+    ${({ theme }) => theme.media.tablet} {
       padding: 0 10%;
     }
-    ${({ theme }) => theme.media.tablet} {
+    ${({ theme }) => theme.media.laptop} {
       padding: 0 15%;
     }
     ${({ theme }) => theme.media.desktop} {

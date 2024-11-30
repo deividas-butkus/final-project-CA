@@ -18,13 +18,13 @@ const StyledDiv = styled.div`
   justify-content: space-between;
   align-items: start;
   gap: 0.5rem;
-  ${({ theme }) => theme.media.mobile} {
+  ${({ theme }) => theme.media.tablet} {
     flex-direction: row;
     align-items: center;
   }
   > a {
     width: 100%;
-    ${({ theme }) => theme.media.mobile} {
+    ${({ theme }) => theme.media.tablet} {
       width: 70%;
     }
     > div {
@@ -73,7 +73,7 @@ const StyledDiv = styled.div`
   }
   > button {
     align-self: flex-end;
-    ${({ theme }) => theme.media.mobile} {
+    ${({ theme }) => theme.media.tablet} {
       align-self: center;
     }
     &:hover {
