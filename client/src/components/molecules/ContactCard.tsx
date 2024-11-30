@@ -6,7 +6,7 @@ import { User } from "../../types/UsersTypes";
 
 const StyledArticle = styled.article`
   width: 100%;
-  ${({ theme }) => theme.media.mobile} {
+  ${({ theme }) => theme.media.tablet} {
     width: 80%;
   }
   > a {

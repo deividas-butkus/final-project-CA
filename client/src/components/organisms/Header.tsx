@@ -11,7 +11,7 @@ const StyledHeader = styled.header`
   position: sticky;
   top: 0;
   height: 4rem;
-  ${({ theme }) => theme.media.mobile} {
+  ${({ theme }) => theme.media.tablet} {
     height: 5rem;
   }
   display: flex;
@@ -25,7 +25,7 @@ const StyledHeader = styled.header`
 const Header = () => {
   const { currentUser } = useUsersContext();
   const theme = useTheme();
-  const isNotMobile = useMediaQuery(theme.media.mobile);
+  const isNotMobile = useMediaQuery(theme.media.tablet);
 
   return (
     <StyledHeader>

@@ -16,7 +16,7 @@ const StyledFooter = styled.footer`
   justify-content: space-between;
   align-items: start;
   padding-top: 0.5rem;
-  ${({ theme }) => theme.media.mobile} {
+  ${({ theme }) => theme.media.tablet} {
     flex-direction: row;
   }
   p {
