@@ -6,31 +6,54 @@ import LoginIcon from "@mui/icons-material/Login";
 import hero from "../../../assets/hero.webp";
 
 const StyledSection = styled.section`
-  > div.heroImg {
-    padding-top: 2rem;
-    width: 100%;
-    aspect-ratio: 16/9;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    > img {
-      width: 80%;
-      ${({ theme }) => theme.media.mobile} {
-        width: 60%;
-      }
-      ${({ theme }) => theme.media.tablet} {
-        width: 50%;
-      }
-      height: auto;
-      border-radius: 15px;
-      box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
+  > div.heroContainer {
+    ${({ theme }) => theme.media.desktop} {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0;
     }
-  }
-  > h1 {
-    font-weight: 200;
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 3rem;
+    > div.heroImg {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 2rem;
+      ${({ theme }) => theme.media.laptop} {
+        margin-top: 1rem;
+      }
+      ${({ theme }) => theme.media.desktop} {
+        width: 50%;
+        margin-top: 0;
+      }
+      > img {
+        width: 80%;
+        ${({ theme }) => theme.media.tablet} {
+          width: 60%;
+        }
+        ${({ theme }) => theme.media.laptop} {
+          width: 50%;
+        }
+        ${({ theme }) => theme.media.desktop} {
+          width: 100%;
+        }
+        height: auto;
+        border-radius: 15px;
+        box-shadow: 1px 1px 5px ${({ theme }) => theme.accent};
+      }
+    }
+    > h1 {
+      font-weight: 200;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      ${({ theme }) => theme.media.desktop} {
+        width: 50%;
+        margin: 0;
+      }
+    }
   }
   > div.entryBoxesContainer {
     display: flex;
@@ -88,10 +111,12 @@ const StyledSection = styled.section`
 const Landing = () => {
   return (
     <StyledSection>
-      <div className="heroImg">
-        <img src={hero} alt="People chatting" />
+      <div className="heroContainer">
+        <div className="heroImg">
+          <img src={hero} alt="People chatting" />
+        </div>
+        <h1>where ideas spark and stories bloom</h1>
       </div>
-      <h1>where ideas spark and stories bloom</h1>
       <div className="entryBoxesContainer">
         <div className="entryBox login">
           <p>Already a member?</p>
