@@ -55,6 +55,11 @@ const StyledSection = styled.section`
       }
     }
   }
+  hr {
+    border: 0;
+    border-top: 0.5px solid #5b5c5c;
+    margin: 2rem 0;
+  }
   > div.entryBoxesContainer {
     display: flex;
     justify-content: center;
@@ -117,6 +122,7 @@ const Landing = () => {
         </div>
         <h1>where ideas spark and stories bloom</h1>
       </div>
+      <hr />
       <div className="entryBoxesContainer">
         <div className="entryBox login">
           <p>Already a member?</p>
