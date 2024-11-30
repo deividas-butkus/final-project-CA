@@ -44,6 +44,14 @@ const GlobalStyles = createGlobalStyle`
     &:hover {
       transform: scale(1.05);
     }
+    &.delete:hover {
+      color: #fff;
+    }
+  }
+
+  input {
+    font-size: .8rem;
+    font-weight: 300;
   }
 
   ::-webkit-scrollbar {

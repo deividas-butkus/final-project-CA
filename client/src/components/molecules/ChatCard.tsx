@@ -76,9 +76,6 @@ const StyledDiv = styled.div`
     ${({ theme }) => theme.media.tablet} {
       align-self: center;
     }
-    &:hover {
-      color: #fff;
-    }
   }
 `;
 
