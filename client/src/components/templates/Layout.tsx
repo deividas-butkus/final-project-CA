@@ -6,7 +6,7 @@ import Footer from "../organisms/Footer";
 
 const StyledMain = styled.main`
   min-height: calc(100vh - 4rem);
-  ${({ theme }) => theme.media.mobile} {
+  ${({ theme }) => theme.media.tablet} {
     min-height: calc(100vh - 5rem);
   }
   display: flex;
