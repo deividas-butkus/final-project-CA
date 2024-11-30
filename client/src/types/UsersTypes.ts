@@ -9,7 +9,10 @@ export type UsersContextType = {
   login: (credentials: { username: string; password: string }) => Promise<void>;
   updateUsername: (newUsername: string) => Promise<void>;
   updateProfileImage: (file: File | null) => Promise<void>;
-  updatePassword: (newPassword: string) => Promise<void>;
+  updatePassword: (data: {
+    oldPassword: string;
+    newPassword: string;
+  }) => Promise<void>;
   logout: () => void;
   tokenExpiration: number | null;
   isTokenValid: (token: string) => boolean;
