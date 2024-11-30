@@ -10,12 +10,12 @@ const baseTheme = {
 
 export const lightTheme = {
   ...baseTheme,
-  background: "#d4d8d9",
+  background: "#fffce2",
   text: "#2e2e2e",
   accent: "#195470",
   buttonBg: "#8de5f2",
   buttonText: "#243b55",
-  error: "#d91924",
+  error: "#FE0605",
 };
 
 export const darkTheme = {
@@ -25,5 +25,5 @@ export const darkTheme = {
   accent: "#60c1c7",
   buttonBg: "#243b55",
   buttonText: "#8de5f2",
-  error: "#FE0605",
+  error: "#d91924",
 };
