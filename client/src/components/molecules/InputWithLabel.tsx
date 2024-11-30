@@ -2,38 +2,32 @@ import { forwardRef, useState, useRef, useEffect } from "react";
 import styled, { DefaultTheme } from "styled-components";
 import Button from "../atoms/Button";
 
-// Hidden file input for file selection
 const StyledHiddenFileInput = styled.input`
   display: none;
 `;
 
-// Field container with adjustable gap
 const StyledFieldContainer = styled.div<{ gap?: string }>`
   display: flex;
   flex-direction: column;
   gap: ${({ gap }) => gap || "8px"};
 `;
 
-// Label styling with color and font size options
 const StyledLabel = styled.label<{ color?: string; fontSize?: string }>`
   font-size: ${({ fontSize }) => fontSize || "16px"};
   color: ${({ color, theme }) => color || (theme as DefaultTheme).text};
 `;
 
-// File input row to align elements
 const FileInputRow = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
 `;
 
-// File label styling
 const StyledFileLabel = styled.span`
   color: ${({ theme }) => (theme as DefaultTheme).text};
   font-size: 14px;
 `;
 
-// Common styles for inputs and textareas
 const inputStyles = `
   font-family: inherit;
   padding: 8px;
@@ -46,18 +40,31 @@ const inputStyles = `
   }) => $borderColor || theme.border};
   border-radius: 8px;
   outline: none;
+
   &:focus {
-    border-color: ${({ theme }: { theme: DefaultTheme }) => theme.accent};
+    border-color: ${({ theme }: { theme: DefaultTheme }) =>
+      theme.accent} !important;
+    box-shadow: 0 0 0 2px ${({ theme }: { theme: DefaultTheme }) =>
+      theme.accent} !important;
+    outline: 2px solid ${({ theme }: { theme: DefaultTheme }) =>
+      theme.accent} !important;
   }
 `;
 
-// Styled input component
 const StyledInput = styled.input<StyledInputProps>`
   ${inputStyles}
   padding: ${({ $padding }) => $padding || "8px"};
+  &:focus {
+    border-color: ${({
+      $borderColor,
+      theme,
+    }: {
+      $borderColor?: string;
+      theme: DefaultTheme;
+    }) => $borderColor || theme.accent};
+  }
 `;
 
-// Styled textarea component with additional textarea-specific styles
 const StyledTextarea = styled.textarea<StyledInputProps>`
   ${inputStyles}
   resize: none;
@@ -65,26 +72,31 @@ const StyledTextarea = styled.textarea<StyledInputProps>`
   background-color: ${({ theme }) => (theme as DefaultTheme).background};
   color: ${({ theme }) => (theme as DefaultTheme).text};
   padding: ${({ $padding }) => $padding || "8px"};
-  line-height: 1.5; /* Adjust this based on your font size */
-  min-height: calc(
-    1.5em + ${({ $padding }) => $padding || "16px"}
-  ); /* Ensures a single line height plus padding */
+  line-height: 1.5;
+  min-height: calc(1.5em + ${({ $padding }) => $padding || "16px"});
   box-sizing: border-box;
+
+  &:focus {
+    border-color: ${({
+      $borderColor,
+      theme,
+    }: {
+      $borderColor?: string;
+      theme: DefaultTheme;
+    }) => $borderColor || theme.accent};
+  }
 `;
 
-// Error message styling
 const ErrorMessage = styled.span`
   color: ${({ theme }) => (theme as DefaultTheme).error};
   font-size: 12px;
 `;
 
-// Define the type for StyledInputProps if not already defined
 type StyledInputProps = {
   $padding?: string;
   $borderColor?: string;
 };
 
-// InputWithLabel component props
 type InputWithLabelProps = {
   label: string;
   type?: string;
@@ -109,7 +121,6 @@ type InputWithLabelProps = {
   gap?: string;
 };
 
-// InputWithLabel component
 const InputWithLabel = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   InputWithLabelProps
@@ -141,7 +152,7 @@ const InputWithLabel = forwardRef<
     const resizeTextarea = () => {
       if (textareaRef.current) {
         textareaRef.current.style.height = "auto"; // Reset height to auto
-        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set height to scrollHeight to fit content
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
       }
     };
 
