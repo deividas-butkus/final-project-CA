@@ -2,15 +2,15 @@ const baseTheme = {
   border: "#1f3b4d",
   active: "#ff4500",
   media: {
-    mobile: "@media (min-width: 576px)",
-    tablet: "@media (min-width: 768px)",
+    tablet: "@media (min-width: 576px)",
+    laptop: "@media (min-width: 768px)",
     desktop: "@media (min-width: 1024px)",
   },
 };
 
 export const lightTheme = {
   ...baseTheme,
-  background: "#eee",
+  background: "#d4d8d9",
   text: "#2e2e2e",
   accent: "#195470",
   buttonBg: "#8de5f2",
