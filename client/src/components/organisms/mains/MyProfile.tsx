@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import KeyIcon from "@mui/icons-material/Key";
+
 import { useUsersContext } from "../../../contexts/users/useUsersContext";
 import Button from "../../atoms/Button";
 import ThemeToggler from "../../molecules/ThemeToggler";
@@ -89,6 +91,7 @@ const MyProfile = () => {
   const [isEditingProfileImage, setIsEditingProfileImage] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
 
+  const [oldPassword, setOldPassword] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -101,6 +104,7 @@ const MyProfile = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<
     string | null
   >(null);
+  const [oldPasswordError, setOldPasswordError] = useState<string | null>(null);
 
   const hasProfileImage =
     currentUser?.profileImage &&
@@ -119,6 +123,35 @@ const MyProfile = () => {
   const validateUsername = () => {
     const result = usernameSchema.safeParse(newUsername);
     setUsernameError(result.success ? null : result.error.errors[0].message);
+  };
+
+  const validateOldPassword = async () => {
+    const result = passwordSchema.safeParse(oldPassword);
+    if (!result.success) {
+      setOldPasswordError(result.error.errors[0].message);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/users/validatePassword", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ password: oldPassword }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setOldPasswordError(errorData.message || "Old password is incorrect");
+      } else {
+        setOldPasswordError(null);
+      }
+    } catch (err) {
+      console.error("Failed to validate old password:", err);
+      setOldPasswordError("Error validating password. Please try again.");
+    }
   };
 
   const validatePassword = () => {
@@ -158,22 +191,31 @@ const MyProfile = () => {
   };
 
   const handleSavePassword = async () => {
-    if (!passwordError && !confirmPasswordError) {
-      try {
-        await updatePassword(newPassword);
-        setIsEditingPassword(false);
-        setNewPassword("");
-        setConfirmPassword("");
-        setPasswordSuccess("Password saved successfully!");
-        setPasswordError(null);
-      } catch (err) {
-        if (err instanceof Error) {
-          setPasswordError(err.message);
-        } else {
-          setPasswordError("Failed to save the password.");
-        }
-        setPasswordSuccess(null);
-      }
+    validatePassword();
+    validateConfirmPassword();
+
+    if (!oldPassword) {
+      setOldPasswordError("Old password is required");
+      return;
+    }
+
+    if (passwordError || confirmPasswordError || oldPasswordError) {
+      return;
+    }
+
+    try {
+      await updatePassword({ oldPassword, newPassword });
+
+      setIsEditingPassword(false);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSuccess("Password updated successfully!");
+      setOldPasswordError(null);
+      setPasswordError(null);
+      setConfirmPasswordError(null);
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : "Update failed");
     }
   };
 
@@ -289,9 +331,22 @@ const MyProfile = () => {
       <hr />
 
       <div className="fieldContainer">
+        {!isEditingPassword && <KeyIcon />}
+        {passwordSuccess && <p style={{ color: "green" }}>{passwordSuccess}</p>}
+
         <div className="inputs">
           {isEditingPassword && (
             <>
+              <InputWithLabel
+                label="Old Password"
+                type="password"
+                name="oldPassword"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                onBlur={validateOldPassword}
+                error={oldPasswordError || ""}
+                placeholder="Enter old password"
+              />
               <InputWithLabel
                 label="New Password"
                 type="password"
@@ -303,14 +358,14 @@ const MyProfile = () => {
                 placeholder="Enter new password"
               />
               <InputWithLabel
-                label="Confirm Password"
+                label="Confirm New Password"
                 type="password"
                 name="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 onBlur={validateConfirmPassword}
                 error={confirmPasswordError || ""}
-                placeholder="Confirm your new password"
+                placeholder="Confirm new password"
               />
             </>
           )}
@@ -319,7 +374,17 @@ const MyProfile = () => {
           {isEditingPassword ? (
             <>
               <Button onClick={handleSavePassword}>Save</Button>
-              <Button onClick={() => setIsEditingPassword(false)}>
+              <Button
+                onClick={() => {
+                  setIsEditingPassword(false);
+                  setOldPassword("");
+                  setNewPassword("");
+                  setConfirmPassword("");
+                  setOldPasswordError(null);
+                  setPasswordError(null);
+                  setConfirmPasswordError(null);
+                }}
+              >
                 Cancel
               </Button>
             </>
@@ -330,8 +395,6 @@ const MyProfile = () => {
           )}
         </div>
       </div>
-      {passwordSuccess && <p style={{ color: "green" }}>{passwordSuccess}</p>}
-      {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
       <hr />
     </StyledSection>
   );

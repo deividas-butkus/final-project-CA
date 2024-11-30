@@ -243,7 +243,10 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
     }
   };
 
-  const updatePassword = async (newPassword: string) => {
+  const updatePassword = async (data: {
+    oldPassword: string;
+    newPassword: string;
+  }): Promise<void> => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("/api/users/updatePassword", {
@@ -252,13 +255,16 @@ export const UsersProvider = ({ children }: UsersProviderProps) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ password: newPassword }),
+        body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error("Failed to update password");
 
-      dispatch({ type: "UPDATE_PASSWORD" });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update password");
+      }
     } catch (err) {
       console.error("Failed to update password:", err);
+      throw err; // Re-throw to let the caller handle it
     }
   };
 

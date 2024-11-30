@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Get currently logged in user
+// Route to get currently logged in user
 router.get("/current", authenticateToken, async (req, res) => {
   try {
     const user = await usersCollection.findOne({ _id: req.user.userId });
@@ -68,7 +68,7 @@ router.get("/current", authenticateToken, async (req, res) => {
   }
 });
 
-// Route for getting all users
+// Route to get all users
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const users = await usersCollection.find().sort({ username: 1 }).toArray();
@@ -269,13 +269,49 @@ router.patch("/resetProfileImage", authenticateToken, async (req, res) => {
   }
 });
 
-// Route to update password
-router.patch("/updatePassword", authenticateToken, async (req, res) => {
+// Route to validate old password
+router.post("/validatePassword", authenticateToken, async (req, res) => {
   const { password } = req.body;
   const userId = req.user.userId;
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await usersCollection.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Old password is incorrect" });
+    }
+
+    res.status(200).json({ message: "Old password is valid" });
+  } catch (err) {
+    console.error("Error validating password:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Route to update password
+router.patch("/updatePassword", authenticateToken, async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userId = req.user.userId;
+
+  try {
+    const user = await usersCollection.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Old password is incorrect" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await usersCollection.updateOne(
       { _id: userId },
